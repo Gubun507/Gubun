@@ -4,7 +4,7 @@ Sitio web profesional de herramientas para Windows y scripts para desarrollo de 
 
 ## Descripción
 
-Gubun es una plataforma que reúne utilidades profesionales para Windows y scripts de calidad para motores de juegos como Unity, Unreal Engine y Godot.
+Gubun es una plataforma que reúne utilidades profesionales para Windows y scripts de calidad para motores de juegos como Unity, Unreal Engine y Godot. Ahora con base de datos Supabase para estadísticas en tiempo real, autenticación de usuarios y tracking de descargas.
 
 ## Estructura del Proyecto
 
@@ -17,11 +17,14 @@ Gubun es una plataforma que reúne utilidades profesionales para Windows y scrip
 ├── css/                    # Estilos
 │   ├── main.css
 │   ├── components.css
+│   ├── auth.css           # Estilos de autenticación
 │   └── responsive.css
 ├── js/                     # JavaScript
-│   ├── data.js            # Datos de herramientas/scripts
+│   ├── supabase.js        # Cliente Supabase y funciones DB
+│   ├── data.js            # Datos locales (fallback)
 │   ├── search.js          # Sistema de búsqueda
 │   └── main.js            # Funcionalidad principal
+├── supabase_schema.sql    # Esquema de base de datos
 └── 404.html               # Página de error
 ```
 
@@ -30,16 +33,38 @@ Gubun es una plataforma que reúne utilidades profesionales para Windows y scrip
 - HTML5 semántico
 - CSS3 con variables personalizadas
 - JavaScript vanilla (ES6+)
+- [Supabase](https://supabase.com) - Backend as a Service
+- [Render](https://render.com) - Hosting estático
 - Diseño responsive (mobile-first)
-- Sin dependencias externas
 
 ## Características
 
 - **Herramientas Windows**: Catálogo con filtros por categoría y ordenamiento
 - **Scripts GameDev**: Código para Unity, Unreal Engine, Godot con preview modal
 - **Sistema de búsqueda**: Búsqueda global y filtros locales
+- **Autenticación**: Registro e inicio de sesión con Supabase Auth
+- **Estadísticas en tiempo real**: Conteo real de visitas, descargas y likes
 - **Diseño responsive**: Optimizado para todos los dispositivos
 - **Tema oscuro**: Interfaz moderna para desarrolladores
+
+## Configuración de Supabase
+
+### 1. Crear Proyecto
+- Ir a [supabase.com](https://supabase.com) y crear cuenta
+- Crear nuevo proyecto (gratis)
+- Guardar URL y anon key
+
+### 2. Configurar Base de Datos
+- Ir al SQL Editor de Supabase
+- Copiar y ejecutar el contenido de `supabase_schema.sql`
+- Esto creará las tablas: `tools`, `scripts`, `downloads`, `views`, `likes`
+
+### 3. Actualizar Credenciales
+Editar `js/supabase.js` con tus credenciales:
+```javascript
+const SUPABASE_URL = 'https://tu-proyecto.supabase.co';
+const SUPABASE_ANON_KEY = 'tu-anon-key';
+```
 
 ## Deploy en Render
 
@@ -88,41 +113,53 @@ php -S localhost:8000
 
 ## Personalización
 
-### Agregar nuevas herramientas
-Editar `js/data.js` en la sección `tools`:
+### Datos Estáticos vs Supabase
+
+El sitio funciona en **modo híbrido**:
+- **Con Supabase**: Usa la base de datos para herramientas, scripts y estadísticas en tiempo real
+- **Sin Supabase**: Usa los datos estáticos de `js/data.js` como fallback
+
+### Modo Offline
+Si Supabase no está disponible, el sitio automáticamente usa los datos locales de `js/data.js`.
+
+### Agregar nuevos datos en Supabase
+
+Desde el Dashboard de Supabase → Table Editor:
+
+1. **Herramientas**: Tabla `tools`
+   - Campos: `name`, `category`, `description`, `tags`, `icon`, `link`, `featured`
+
+2. **Scripts**: Tabla `scripts`
+   - Campos: `name`, `engine`, `language`, `description`, `tags`, `icon`, `code`, `featured`
+
+## API de Supabase
+
+El archivo `js/supabase.js` expone el objeto `GubunDB` con métodos:
 
 ```javascript
-{
-    id: "tool-x",
-    name: "Nombre",
-    category: "sistema",
-    description: "Descripción",
-    tags: ["Tag1", "Tag2"],
-    downloads: 0,
-    rating: 5.0,
-    icon: "🔧",
-    link: "https://...",
-    featured: false
-}
-```
+// Obtener herramientas
+const tools = await GubunDB.getTools('sistema');
 
-### Agregar nuevos scripts
-Editar `js/data.js` en la sección `scripts`:
+// Obtener scripts
+const scripts = await GubunDB.getScripts('unity', 'csharp');
 
-```javascript
-{
-    id: "script-x",
-    name: "Nombre",
-    engine: "unity",
-    language: "csharp",
-    description: "Descripción",
-    tags: ["Tag1"],
-    downloads: 0,
-    rating: 5.0,
-    icon: "🎮",
-    code: `código aquí`,
-    featured: false
-}
+// Buscar
+const results = await GubunDB.search('player');
+
+// Registrar descarga
+await GubunDB.recordDownload(toolId, 'tool');
+
+// Registrar vista
+await GubunDB.recordView(toolId, 'tool');
+
+// Dar/quitar like
+await GubunDB.toggleLike(toolId, 'tool');
+
+// Autenticación
+await GubunDB.signUp(email, password);
+await GubunDB.signIn(email, password);
+await GubunDB.signOut();
+const user = await GubunDB.getCurrentUser();
 ```
 
 ## Licencia

@@ -2,7 +2,28 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initHomePage();
     initTooltips();
+    initRealtimeStats();
 });
+
+// Real-time stats update
+function initRealtimeStats() {
+    // Update stats every 30 seconds if Supabase is available
+    if (typeof GubunDB !== 'undefined') {
+        updateAllStats();
+        setInterval(updateAllStats, 30000);
+    }
+}
+
+async function updateAllStats() {
+    // This will be called periodically to refresh stats from Supabase
+    const cards = document.querySelectorAll('.card');
+    for (const card of cards) {
+        const itemId = card.dataset.id;
+        if (itemId) {
+            // Stats will be updated via Supabase realtime
+        }
+    }
+}
 
 function initNavigation() {
     const navToggle = document.querySelector('.nav-toggle');
@@ -207,9 +228,18 @@ function copyCode(button) {
     });
 }
 
-function downloadScript(scriptId) {
+async function downloadScript(scriptId) {
     const script = GUBUN_DATA.scripts.find(s => s.id === scriptId);
     if (!script) return;
+    
+    // Record download in Supabase if available
+    if (typeof GubunDB !== 'undefined') {
+        try {
+            await GubunDB.recordDownload(scriptId, 'script');
+        } catch (err) {
+            console.error('Error recording download:', err);
+        }
+    }
     
     const extensions = {
         csharp: 'cs',
