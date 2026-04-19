@@ -207,6 +207,52 @@ const GubunDB = {
         } catch {
             return 'unknown-' + Math.random().toString(36).slice(2, 10);
         }
+    },
+    
+    // Get real-time stats for homepage
+    async getStats() {
+        try {
+            // Get tools count
+            const { count: toolsCount, error: toolsError } = await supabaseClient
+                .from('tools')
+                .select('*', { count: 'exact', head: true });
+            
+            // Get scripts count
+            const { count: scriptsCount, error: scriptsError } = await supabaseClient
+                .from('scripts')
+                .select('*', { count: 'exact', head: true });
+            
+            // Get total downloads
+            const { data: downloadsData, error: downloadsError } = await supabaseClient
+                .from('downloads')
+                .select('id');
+            
+            if (toolsError || scriptsError) throw toolsError || scriptsError;
+            
+            return {
+                tools: toolsCount || 0,
+                scripts: scriptsCount || 0,
+                downloads: downloadsData?.length || 0
+            };
+        } catch (err) {
+            console.error('Error fetching stats:', err);
+            // Return fallback data
+            return {
+                tools: 0,
+                scripts: 6,
+                downloads: 0
+            };
+        }
+    },
+    
+    // Check if user is authenticated
+    async requireAuth() {
+        const user = await this.getCurrentUser();
+        if (!user) {
+            showAuthModal('signin');
+            return false;
+        }
+        return true;
     }
 };
 

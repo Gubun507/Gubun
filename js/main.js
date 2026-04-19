@@ -3,25 +3,40 @@ document.addEventListener('DOMContentLoaded', () => {
     initHomePage();
     initTooltips();
     initRealtimeStats();
+    loadRealStats();
 });
+
+// Load real stats from Supabase
+async function loadRealStats() {
+    if (typeof GubunDB !== 'undefined') {
+        try {
+            const stats = await GubunDB.getStats();
+            
+            // Update hero stats
+            const toolsStat = document.querySelector('.hero-stats .stat:nth-child(1) .stat-number');
+            const scriptsStat = document.querySelector('.hero-stats .stat:nth-child(2) .stat-number');
+            const downloadsStat = document.querySelector('.hero-stats .stat:nth-child(3) .stat-number');
+            
+            if (toolsStat) toolsStat.textContent = stats.tools + (stats.tools >= 50 ? '+' : '');
+            if (scriptsStat) scriptsStat.textContent = stats.scripts + (stats.scripts >= 10 ? '+' : '');
+            if (downloadsStat) downloadsStat.textContent = formatNumberCompact(stats.downloads) + (stats.downloads >= 1000 ? '+' : '');
+        } catch (err) {
+            console.error('Error loading stats:', err);
+        }
+    }
+}
+
+function formatNumberCompact(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+    return num.toString();
+}
 
 // Real-time stats update
 function initRealtimeStats() {
     // Update stats every 30 seconds if Supabase is available
     if (typeof GubunDB !== 'undefined') {
-        updateAllStats();
-        setInterval(updateAllStats, 30000);
-    }
-}
-
-async function updateAllStats() {
-    // This will be called periodically to refresh stats from Supabase
-    const cards = document.querySelectorAll('.card');
-    for (const card of cards) {
-        const itemId = card.dataset.id;
-        if (itemId) {
-            // Stats will be updated via Supabase realtime
-        }
+        setInterval(loadRealStats, 30000);
     }
 }
 
@@ -59,7 +74,17 @@ function initHomePage() {
     
     if (featuredTools && GUBUN_DATA) {
         const tools = GUBUN_DATA.tools.filter(t => t.featured).slice(0, 3);
-        featuredTools.innerHTML = tools.map(tool => createToolCard(tool)).join('');
+        if (tools.length === 0) {
+            featuredTools.innerHTML = `
+                <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                    <div style="font-size: 4rem; margin-bottom: 16px;">🔧</div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 8px; color: var(--text-primary);">Aún no hay herramienta publicada</h3>
+                    <p style="color: var(--text-secondary);">Estamos trabajando en las primeras herramientas. ¡Vuelve pronto!</p>
+                </div>
+            `;
+        } else {
+            featuredTools.innerHTML = tools.map(tool => createToolCard(tool)).join('');
+        }
     }
     
     if (featuredScripts && GUBUN_DATA) {
@@ -163,7 +188,16 @@ function createPostCard(post) {
     `;
 }
 
-function showCodeModal(scriptId) {
+async function showCodeModal(scriptId) {
+    // Check authentication first
+    if (typeof GubunDB !== 'undefined') {
+        const isAuth = await GubunDB.requireAuth();
+        if (!isAuth) {
+            showToast('Debes iniciar sesión para ver scripts', 'error');
+            return;
+        }
+    }
+    
     const script = GUBUN_DATA.scripts.find(s => s.id === scriptId);
     if (!script) return;
     
@@ -229,6 +263,15 @@ function copyCode(button) {
 }
 
 async function downloadScript(scriptId) {
+    // Check authentication first
+    if (typeof GubunDB !== 'undefined') {
+        const isAuth = await GubunDB.requireAuth();
+        if (!isAuth) {
+            showToast('Debes iniciar sesión para descargar scripts', 'error');
+            return;
+        }
+    }
+    
     const script = GUBUN_DATA.scripts.find(s => s.id === scriptId);
     if (!script) return;
     

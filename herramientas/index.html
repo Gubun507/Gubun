@@ -85,6 +85,16 @@
                     <h3>No se encontraron herramientas</h3>
                     <p>Intenta con otros filtros o términos de búsqueda</p>
                 </div>
+                
+                <div id="no-tools-message" style="display:none; text-align: center; padding: 80px 20px;">
+                    <div style="font-size: 5rem; margin-bottom: 24px;">🔧</div>
+                    <h2 style="font-size: 2rem; margin-bottom: 16px; color: var(--text-primary);">Aún no hay herramienta publicada</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 500px; margin: 0 auto 32px;">
+                        Estamos trabajando en las primeras herramientas profesionales para Windows. 
+                        ¡Vuelve pronto para descubrir nuestras utilidades!
+                    </p>
+                    <a href="../scripts/" class="btn btn-primary">Explorar Scripts Disponibles</a>
+                </div>
             </div>
         </section>
     </main>
@@ -110,9 +120,9 @@
                 <div class="footer-links">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="#">Términos de uso</a></li>
-                        <li><a href="#">Privacidad</a></li>
-                        <li><a href="#">Contacto</a></li>
+                        <li><a href="../terminos.html">Términos de uso</a></li>
+                        <li><a href="../privacidad.html">Privacidad</a></li>
+                        <li><a href="../contacto.html">Contacto</a></li>
                     </ul>
                 </div>
             </div>
@@ -136,12 +146,25 @@
             const noResults = document.getElementById('no-results');
             
             function renderTools(tools) {
+                const noToolsMessage = document.getElementById('no-tools-message');
+                const hasAnyTools = GUBUN_DATA && GUBUN_DATA.tools && GUBUN_DATA.tools.length > 0;
+                
+                if (!hasAnyTools) {
+                    // No hay ninguna herramienta publicada aún
+                    toolsGrid.style.display = 'none';
+                    noResults.style.display = 'none';
+                    if (noToolsMessage) noToolsMessage.style.display = 'block';
+                    return;
+                }
+                
                 if (tools.length === 0) {
                     toolsGrid.style.display = 'none';
                     noResults.style.display = 'block';
+                    if (noToolsMessage) noToolsMessage.style.display = 'none';
                 } else {
                     toolsGrid.style.display = 'grid';
                     noResults.style.display = 'none';
+                    if (noToolsMessage) noToolsMessage.style.display = 'none';
                     toolsGrid.innerHTML = tools.map(tool => createToolCard(tool)).join('');
                 }
             }

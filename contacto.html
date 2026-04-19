@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contacto Gubun - Envíanos tus preguntas, sugerencias o reportes">
+    <title>Contacto | Gubun</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="/" class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Gubun</span>
+            </a>
+            <button class="nav-toggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Inicio</a></li>
+                <li><a href="herramientas/" class="nav-link">Herramientas</a></li>
+                <li><a href="scripts/" class="nav-link">Scripts</a></li>
+                <li><a href="blog/" class="nav-link">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section" style="padding-top: 140px;">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">Contacto</h1>
+                    <p class="section-subtitle">Estamos aquí para ayudarte</p>
+                </div>
+                
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <div class="grid grid-2" style="margin-bottom: 48px;">
+                        <div class="card" style="padding: 40px; text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 16px;">📧</div>
+                            <h3 style="margin-bottom: 8px; color: var(--text-primary);">Email</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                                Para consultas generales, soporte o reportes
+                            </p>
+                            <a href="mailto:oshpacompany.ft456@gmail.com" 
+                               style="color: var(--primary); font-weight: 500; word-break: break-all;">
+                                oshpacompany.ft456@gmail.com
+                            </a>
+                        </div>
+                        
+                        <div class="card" style="padding: 40px; text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 16px;">⏰</div>
+                            <h3 style="margin-bottom: 8px; color: var(--text-primary);">Horario de Atención</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 8px;">
+                                Lunes a Viernes
+                            </p>
+                            <p style="color: var(--text-primary); font-weight: 500;">
+                                9:00 AM - 6:00 PM (UTC+1)
+                            </p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 8px;">
+                                Respuesta típica en 24-48 horas
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 40px;">
+                        <h2 style="color: var(--primary); margin-bottom: 32px; text-align: center;">
+                            Envíanos un mensaje
+                        </h2>
+                        
+                        <form id="contact-form" style="display: flex; flex-direction: column; gap: 20px;">
+                            <div class="form-group">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-input" id="contact-name" required 
+                                       placeholder="Tu nombre">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-input" id="contact-email" required 
+                                       placeholder="tu@email.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Asunto</label>
+                                <select class="form-input" id="contact-subject" required>
+                                    <option value="">Selecciona un asunto</option>
+                                    <option value="soporte">Soporte técnico</option>
+                                    <option value="script">Problema con un script</option>
+                                    <option value="cuenta">Problemas de cuenta</option>
+                                    <option value="sugerencia">Sugerencia</option>
+                                    <option value="reporte">Reportar abuso</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Mensaje</label>
+                                <textarea class="form-input" id="contact-message" rows="6" required 
+                                          placeholder="Describe tu consulta o problema..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                Enviar mensaje
+                            </button>
+                        </form>
+
+                        <div id="contact-success" style="display: none; text-align: center; padding: 40px;">
+                            <div style="font-size: 4rem; margin-bottom: 16px;">✅</div>
+                            <h3 style="margin-bottom: 8px; color: var(--text-primary);">¡Mensaje enviado!</h3>
+                            <p style="color: var(--text-secondary);">
+                                Gracias por contactarnos. Te responderemos a la brevedad.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 40px; margin-top: 32px;">
+                        <h3 style="color: var(--primary); margin-bottom: 24px;">Preguntas Frecuentes sobre Contacto</h3>
+                        
+                        <div style="margin-bottom: 24px;">
+                            <h4 style="color: var(--text-primary); margin-bottom: 8px;">
+                                ¿Cuánto tiempo tardarán en responderme?
+                            </h4>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Generalmente respondemos dentro de 24-48 horas hábiles. Durante fines de semana 
+                                o festivos, el tiempo de respuesta puede ser mayor.
+                            </p>
+                        </div>
+                        
+                        <div style="margin-bottom: 24px;">
+                            <h4 style="color: var(--text-primary); margin-bottom: 8px;">
+                                ¿Cómo reporto un bug en un script?
+                            </h4>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Selecciona "Problema con un script" en el asunto e incluye: nombre del script, 
+                                versión de Unity/Unreal/Godot, descripción detallada del error y pasos para 
+                                reproducirlo.
+                            </p>
+                        </div>
+                        
+                        <div style="margin-bottom: 24px;">
+                            <h4 style="color: var(--text-primary); margin-bottom: 8px;">
+                                ¿Puedo solicitar un script personalizado?
+                            </h4>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Actualmente no ofrecemos desarrollo de scripts a medida, pero puedes enviarnos 
+                                sugerencias. Los scripts más solicitados pueden ser desarrollados y añadidos 
+                                a la plataforma.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h4 style="color: var(--text-primary); margin-bottom: 8px;">
+                                ¿Cómo elimino mi cuenta?
+                            </h4>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Envíanos un email desde la dirección registrada con el asunto "Eliminar cuenta". 
+                                Procesaremos tu solicitud en un plazo de 7 días.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">Gubun</span>
+                    </a>
+                    <p class="footer-description">Recursos profesionales para desarrolladores.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="terminos.html">Términos de uso</a></li>
+                        <li><a href="privacidad.html">Privacidad</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Gubun. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Contact form handling
+        document.getElementById('contact-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const subject = document.getElementById('contact-subject').value;
+            const message = document.getElementById('contact-message').value;
+            
+            // Create mailto link
+            const mailtoSubject = encodeURIComponent(`[Gubun Contacto] ${subject}: ${name}`);
+            const mailtoBody = encodeURIComponent(
+                `Nombre: ${name}\n` +
+                `Email: ${email}\n` +
+                `Asunto: ${subject}\n\n` +
+                `Mensaje:\n${message}`
+            );
+            
+            // Open email client
+            window.location.href = `mailto:oshpacompany.ft456@gmail.com?subject=${mailtoSubject}&body=${mailtoBody}`;
+            
+            // Show success message
+            document.getElementById('contact-form').style.display = 'none';
+            document.getElementById('contact-success').style.display = 'block';
+            
+            // Reset form
+            document.getElementById('contact-form').reset();
+        });
+    </script>
+</body>
+</html>
