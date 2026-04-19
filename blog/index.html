@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog de Gubun - Tutoriales y recursos para desarrolladores">
+    <title>Blog - Gubun</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="../" class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Gubun</span>
+            </a>
+            <button class="nav-toggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="../" class="nav-link">Inicio</a></li>
+                <li><a href="../herramientas/" class="nav-link">Herramientas</a></li>
+                <li><a href="../scripts/" class="nav-link">Scripts</a></li>
+                <li><a href="./" class="nav-link active">Blog</a></li>
+            </ul>
+            <div class="search-box">
+                <input type="text" id="global-search" placeholder="Buscar artículos...">
+                <button class="search-btn" aria-label="Buscar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section" style="padding-top:120px;">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">Blog Gubun</h1>
+                    <p class="section-subtitle">Tutoriales, noticias y recursos para desarrolladores</p>
+                </div>
+                
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <span class="filter-label">Categoría:</span>
+                        <select class="filter-select" id="category-filter">
+                            <option value="all">Todas</option>
+                            <option value="unity">Unity</option>
+                            <option value="unreal">Unreal Engine</option>
+                            <option value="godot">Godot</option>
+                            <option value="herramientas">Herramientas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="flex:1;max-width:350px;">
+                        <input type="text" class="filter-input" id="local-search" placeholder="Buscar artículos...">
+                    </div>
+                </div>
+                
+                <div class="grid grid-3 search-results" id="posts-grid">
+                </div>
+                
+                <div class="search-empty" id="no-results" style="display:none;">
+                    <div class="search-empty-icon">📝</div>
+                    <h3>No se encontraron artículos</h3>
+                    <p>Intenta con otros filtros o términos de búsqueda</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../" class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">Gubun</span>
+                    </a>
+                    <p class="footer-description">Recursos profesionales para desarrolladores de software y videojuegos.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Secciones</h4>
+                    <ul>
+                        <li><a href="../herramientas/">Herramientas</a></li>
+                        <li><a href="../scripts/">Scripts</a></li>
+                        <li><a href="./">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Términos de uso</a></li>
+                        <li><a href="#">Privacidad</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Gubun. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/search.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const categoryFilter = document.getElementById('category-filter');
+            const localSearch = document.getElementById('local-search');
+            const postsGrid = document.getElementById('posts-grid');
+            const noResults = document.getElementById('no-results');
+            
+            function renderPosts(posts) {
+                if (posts.length === 0) {
+                    postsGrid.style.display = 'none';
+                    noResults.style.display = 'block';
+                } else {
+                    postsGrid.style.display = 'grid';
+                    noResults.style.display = 'none';
+                    postsGrid.innerHTML = posts.map(post => createPostCard(post)).join('');
+                }
+            }
+            
+            function updateResults() {
+                const category = categoryFilter.value;
+                const searchTerm = localSearch.value.toLowerCase();
+                
+                let posts = [...GUBUN_DATA.posts];
+                
+                if (category !== 'all') {
+                    posts = posts.filter(post => post.category === category);
+                }
+                
+                if (searchTerm) {
+                    posts = posts.filter(post => 
+                        post.title.toLowerCase().includes(searchTerm) ||
+                        post.excerpt.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                renderPosts(posts);
+            }
+            
+            categoryFilter.addEventListener('change', updateResults);
+            localSearch.addEventListener('input', updateResults);
+            
+            updateResults();
+        });
+    </script>
+</body>
+</html>

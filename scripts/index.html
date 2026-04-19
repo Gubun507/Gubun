@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Scripts para Unity, Unreal Engine y Godot - Gubun">
+    <title>Scripts - Gubun</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="../" class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Gubun</span>
+            </a>
+            <button class="nav-toggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="../" class="nav-link">Inicio</a></li>
+                <li><a href="../herramientas/" class="nav-link">Herramientas</a></li>
+                <li><a href="./" class="nav-link active">Scripts</a></li>
+                <li><a href="../blog/" class="nav-link">Blog</a></li>
+            </ul>
+            <div class="search-box">
+                <input type="text" id="global-search" placeholder="Buscar scripts...">
+                <button class="search-btn" aria-label="Buscar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section" style="padding-top:120px;">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">Scripts para GameDev</h1>
+                    <p class="section-subtitle">Código de calidad para Unity, Unreal Engine y Godot</p>
+                </div>
+                
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <span class="filter-label">Motor:</span>
+                        <select class="filter-select" id="engine-filter">
+                            <option value="all">Todos</option>
+                            <option value="unity">Unity</option>
+                            <option value="unreal">Unreal Engine</option>
+                            <option value="godot">Godot</option>
+                            <option value="gamemaker">GameMaker</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Lenguaje:</span>
+                        <select class="filter-select" id="language-filter">
+                            <option value="all">Todos</option>
+                            <option value="csharp">C#</option>
+                            <option value="cpp">C++</option>
+                            <option value="blueprint">Blueprint</option>
+                            <option value="gdscript">GDScript</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Ordenar:</span>
+                        <select class="filter-select" id="sort-filter">
+                            <option value="featured">Destacados</option>
+                            <option value="downloads">Más descargados</option>
+                            <option value="rating">Mejor valorados</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="flex:1;max-width:250px;">
+                        <input type="text" class="filter-input" id="local-search" placeholder="Buscar scripts...">
+                    </div>
+                </div>
+                
+                <div class="grid grid-3 search-results" id="scripts-grid">
+                </div>
+                
+                <div class="search-empty" id="no-results" style="display:none;">
+                    <div class="search-empty-icon">🔍</div>
+                    <h3>No se encontraron scripts</h3>
+                    <p>Intenta con otros filtros o términos de búsqueda</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../" class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">Gubun</span>
+                    </a>
+                    <p class="footer-description">Recursos profesionales para desarrolladores de software y videojuegos.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Secciones</h4>
+                    <ul>
+                        <li><a href="../herramientas/">Herramientas</a></li>
+                        <li><a href="./">Scripts</a></li>
+                        <li><a href="../blog/">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Términos de uso</a></li>
+                        <li><a href="#">Privacidad</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Gubun. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/search.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const engineFilter = document.getElementById('engine-filter');
+            const languageFilter = document.getElementById('language-filter');
+            const sortFilter = document.getElementById('sort-filter');
+            const localSearch = document.getElementById('local-search');
+            const scriptsGrid = document.getElementById('scripts-grid');
+            const noResults = document.getElementById('no-results');
+            
+            function renderScripts(scripts) {
+                if (scripts.length === 0) {
+                    scriptsGrid.style.display = 'none';
+                    noResults.style.display = 'block';
+                } else {
+                    scriptsGrid.style.display = 'grid';
+                    noResults.style.display = 'none';
+                    scriptsGrid.innerHTML = scripts.map(script => createScriptCard(script)).join('');
+                }
+            }
+            
+            window.renderScripts = renderScripts;
+            
+            function updateResults() {
+                const engine = engineFilter.value;
+                const language = languageFilter.value;
+                const sort = sortFilter.value;
+                const searchTerm = localSearch.value.toLowerCase();
+                
+                let scripts = window.searchEngine.filterScripts(engine, language, sort);
+                
+                if (searchTerm) {
+                    scripts = scripts.filter(script => 
+                        script.name.toLowerCase().includes(searchTerm) ||
+                        script.description.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                renderScripts(scripts);
+            }
+            
+            engineFilter.addEventListener('change', updateResults);
+            languageFilter.addEventListener('change', updateResults);
+            sortFilter.addEventListener('change', updateResults);
+            localSearch.addEventListener('input', updateResults);
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const engineParam = urlParams.get('engine');
+            if (engineParam) {
+                engineFilter.value = engineParam;
+            }
+            
+            updateResults();
+        });
+    </script>
+</body>
+</html>

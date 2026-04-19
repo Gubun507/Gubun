@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gubun - Herramientas profesionales para Windows y scripts para Unity, Unreal Engine y desarrollo de videojuegos">
+    <meta name="keywords" content="herramientas Windows, scripts Unity, Unreal Engine, game development, programación">
+    <meta property="og:title" content="Gubun - Herramientas y Scripts para Desarrolladores">
+    <meta property="og:description" content="Descubre herramientas útiles para Windows y scripts de calidad para motores de juegos">
+    <meta property="og:type" content="website">
+    <title>Gubun - Herramientas y Scripts para Desarrolladores</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="/" class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Gubun</span>
+            </a>
+            <button class="nav-toggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link active">Inicio</a></li>
+                <li><a href="herramientas/" class="nav-link">Herramientas</a></li>
+                <li><a href="scripts/" class="nav-link">Scripts</a></li>
+                <li><a href="blog/" class="nav-link">Blog</a></li>
+            </ul>
+            <div class="search-box">
+                <input type="text" id="global-search" placeholder="Buscar herramientas, scripts...">
+                <button class="search-btn" aria-label="Buscar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Herramientas y Scripts
+                        <span class="gradient-text">para Desarrolladores</span>
+                    </h1>
+                    <p class="hero-description">
+                        Descubre utilidades profesionales para Windows y scripts optimizados para Unity, 
+                        Unreal Engine y más. Todo lo que necesitas para acelerar tu flujo de trabajo.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="herramientas/" class="btn btn-primary">
+                            Explorar Herramientas
+                        </a>
+                        <a href="scripts/" class="btn btn-secondary">
+                            Ver Scripts
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Herramientas</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">100+</span>
+                        <span class="stat-label">Scripts</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">10k+</span>
+                        <span class="stat-label">Descargas</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-dark">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Herramientas Destacadas</h2>
+                    <p class="section-subtitle">Software profesional para optimizar tu sistema Windows</p>
+                </div>
+                <div class="grid grid-3" id="featured-tools">
+                </div>
+                <div class="section-footer">
+                    <a href="herramientas/" class="btn btn-outline">Ver todas las herramientas</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Scripts Populares</h2>
+                    <p class="section-subtitle">Código de calidad para motores de juegos</p>
+                </div>
+                <div class="grid grid-3" id="featured-scripts">
+                </div>
+                <div class="section-footer">
+                    <a href="scripts/" class="btn btn-outline">Ver todos los scripts</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section-gradient">
+            <div class="container">
+                <div class="categories-grid">
+                    <a href="herramientas/?cat=sistema" class="category-card">
+                        <div class="category-icon">🔧</div>
+                        <h3>Sistema</h3>
+                        <p>Optimización y mantenimiento</p>
+                    </a>
+                    <a href="herramientas/?cat=desarrollo" class="category-card">
+                        <div class="category-icon">💻</div>
+                        <h3>Desarrollo</h3>
+                        <p>IDEs y herramientas de código</p>
+                    </a>
+                    <a href="herramientas/?cat=multimedia" class="category-card">
+                        <div class="category-icon">🎨</div>
+                        <h3>Multimedia</h3>
+                        <p>Edición de audio y video</p>
+                    </a>
+                    <a href="scripts/?engine=unity" class="category-card">
+                        <div class="category-icon">🎮</div>
+                        <h3>Unity</h3>
+                        <p>Scripts para Unity Engine</p>
+                    </a>
+                    <a href="scripts/?engine=unreal" class="category-card">
+                        <div class="category-icon">🚀</div>
+                        <h3>Unreal Engine</h3>
+                        <p>Blueprints y C++</p>
+                    </a>
+                    <a href="scripts/?engine=godot" class="category-card">
+                        <div class="category-icon">🤖</div>
+                        <h3>Godot</h3>
+                        <p>GDScript y recursos</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Últimos Artículos</h2>
+                    <p class="section-subtitle">Tutoriales y noticias del mundo del desarrollo</p>
+                </div>
+                <div class="grid grid-3" id="latest-posts">
+                </div>
+                <div class="section-footer">
+                    <a href="blog/" class="btn btn-outline">Ver todos los artículos</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">Gubun</span>
+                    </a>
+                    <p class="footer-description">
+                        Recursos profesionales para desarrolladores de software y videojuegos.
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <h4>Secciones</h4>
+                    <ul>
+                        <li><a href="herramientas/">Herramientas</a></li>
+                        <li><a href="scripts/">Scripts</a></li>
+                        <li><a href="blog/">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Términos de uso</a></li>
+                        <li><a href="#">Privacidad</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Gubun. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

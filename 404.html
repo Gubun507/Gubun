@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página no encontrada - Gubun</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .error-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+        .error-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .error-message {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 400px;
+        }
+        .error-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Página no encontrada</h1>
+        <p class="error-message">La página que buscas no existe o ha sido movida. Verifica la URL o vuelve al inicio.</p>
+        <div class="error-actions">
+            <a href="/" class="btn btn-primary">Volver al inicio</a>
+            <a href="herramientas/" class="btn btn-secondary">Herramientas</a>
+            <a href="scripts/" class="btn btn-secondary">Scripts</a>
+        </div>
+    </div>
+</body>
+</html>
