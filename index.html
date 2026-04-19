@@ -16,6 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.paypal.com/sdk/js?client-id=BAAtrXZfnccj-XAg3r17B15xEvUxdkzVe0Rxs7gxzKkFTsesZxlrbfHLQH3zsRNhrkdnDEQNW33rfvHjX0&components=hosted-buttons&disable-funding=venmo&currency=USD"></script>
 </head>
 <body>
     <header class="header">
@@ -199,13 +200,12 @@
                     <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 12px;">
                         Tu donación nos ayuda a crear más herramientas y scripts gratuitos.
                     </p>
-                    <a href="https://www.paypal.com/paypalme/NoemiGuerra17" 
-                       target="_blank" rel="noopener" class="btn btn-small btn-primary" style="display: inline-flex; align-items: center; gap: 6px;">
-                        <span>☕</span> Donar con PayPal
-                    </a>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">
-                        o envía a: <strong>oshpacompany.ft456@gmail.com</strong>
-                    </p>
+                    <div id="paypal-container-RXQ3PYEL9U6MU"></div>
+                    <script>
+                        paypal.HostedButtons({
+                            hostedButtonId: "RXQ3PYEL9U6MU"
+                        }).render("#paypal-container-RXQ3PYEL9U6MU")
+                    </script>
                 </div>
             </div>
             <div class="footer-bottom">
