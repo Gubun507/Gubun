@@ -1,0 +1,24 @@
+{
+  "name": "com.gubun.tpcamera",
+  "displayName": "Gubun Third Person Camera",
+  "version": "1.0.0",
+  "unity": "2020.3",
+  "description": "Cámara de tercera persona profesional para Unity con configuración WASD, zoom, colisiones y freelook.",
+  "keywords": [
+    "camera",
+    "third person",
+    "tps",
+    "controller",
+    "follow",
+    "orbit",
+    "unity"
+  ],
+  "author": {
+    "name": "Gubun",
+    "email": "admin@gubun.dev",
+    "url": "https://gubun.onrender.com"
+  },
+  "dependencies": {},
+  "category": "Camera",
+  "license": "MIT"
+}
