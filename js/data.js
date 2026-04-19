@@ -15,7 +15,7 @@ const GUBUN_DATA = {
             code: `/*
  * =============================================================================
  * ADVANCED FIRST PERSON CONTROLLER
- * Copyright (c) 2025 GUBUN. All Rights Reserved.
+ * Copyright (c) 2026 GUBUN. All Rights Reserved.
  * Author: GUBUN Engineering Team
  * Version: 2.1.0
  * License: Commercial License - GUBUN Tools
@@ -117,7 +117,7 @@ namespace Gubun.UnityTools.Controllers
         private Vector3 targetBobPosition;
 
         // Copyright Notice
-        private const string COPYRIGHT = "© 2025 GUBUN. All Rights Reserved.";
+        private const string COPYRIGHT = "© 2026 GUBUN. All Rights Reserved.";
 
         private void Awake()
         {
@@ -351,7 +351,7 @@ namespace Gubun.UnityTools.Controllers
             code: `/*
  * =============================================================================
  * ULTIMATE AI COMBAT SYSTEM
- * Copyright (c) 2025 GUBUN. All Rights Reserved.
+ * Copyright (c) 2026 GUBUN. All Rights Reserved.
  * Author: GUBUN Engineering Team
  * Version: 1.5.0
  * License: Commercial License - GUBUN Tools
@@ -471,7 +471,7 @@ namespace Gubun.UnityTools.AI
         private Transform currentCover;
         
         // Copyright
-        private const string COPYRIGHT = "© 2025 GUBUN. All Rights Reserved.";
+        private const string COPYRIGHT = "© 2026 GUBUN. All Rights Reserved.";
 
         // Events
         public System.Action<AIState> OnStateChanged;
@@ -912,7 +912,7 @@ namespace Gubun.UnityTools.AI
             code: `/*
  * =============================================================================
  * MODULAR INVENTORY & CRAFTING SYSTEM
- * Copyright (c) 2025 GUBUN. All Rights Reserved.
+ * Copyright (c) 2026 GUBUN. All Rights Reserved.
  * Author: GUBUN Engineering Team
  * Version: 3.0.0
  * License: Commercial License - GUBUN Tools
@@ -1091,7 +1091,7 @@ namespace Gubun.UnityTools.Inventory
         public event Action OnInventoryFull;
         
         // Copyright
-        private const string COPYRIGHT = "© 2025 GUBUN. All Rights Reserved.";
+        private const string COPYRIGHT = "© 2026 GUBUN. All Rights Reserved.";
 
         private void Awake()
         {
@@ -1445,7 +1445,7 @@ namespace Gubun.UnityTools.Inventory
             code: `/*
  * =============================================================================
  * ADVANCED SAVE SYSTEM PRO
- * Copyright (c) 2025 GUBUN. All Rights Reserved.
+ * Copyright (c) 2026 GUBUN. All Rights Reserved.
  * Author: GUBUN Engineering Team
  * Version: 2.0.0
  * License: Commercial License - GUBUN Tools
@@ -1523,7 +1523,7 @@ namespace Gubun.UnityTools.SaveSystem
         public event Action<int> OnAutoSaveTriggered; // slot
 
         // Copyright
-        private const string COPYRIGHT = "© 2025 GUBUN. All Rights Reserved.";
+        private const string COPYRIGHT = "© 2026 GUBUN. All Rights Reserved.";
         private const string VERSION = "2.0.0";
         private const string SAVE_EXTENSION = ".gubun";
 
@@ -2035,7 +2035,7 @@ namespace Gubun.UnityTools.SaveSystem
             code: `/*
  * =============================================================================
  * ADVANCED DIALOGUE SYSTEM WITH CHOICES
- * Copyright (c) 2025 GUBUN. All Rights Reserved.
+ * Copyright (c) 2026 GUBUN. All Rights Reserved.
  * Author: GUBUN Engineering Team
  * Version: 1.8.0
  * License: Commercial License - GUBUN Tools
@@ -2192,7 +2192,7 @@ namespace Gubun.UnityTools.Dialogue
         public System.Action<string, string> OnNodeChanged; // nodeId, speaker
 
         // Copyright
-        private const string COPYRIGHT = "© 2025 GUBUN. All Rights Reserved.";
+        private const string COPYRIGHT = "© 2026 GUBUN. All Rights Reserved.";
 
         // Singleton
         public static DialogueManager Instance { get; private set; }
@@ -2594,7 +2594,7 @@ namespace Gubun.UnityTools.Dialogue
             code: `/*
  * =============================================================================
  * QUEST SYSTEM WITH OBJECTIVES
- * Copyright (c) 2025 GUBUN. All Rights Reserved.
+ * Copyright (c) 2026 GUBUN. All Rights Reserved.
  * Author: GUBUN Engineering Team
  * Version: 2.2.0
  * License: Commercial License - GUBUN Tools
@@ -2830,7 +2830,7 @@ namespace Gubun.UnityTools.Quests
         public static QuestManager Instance { get; private set; }
         
         // Copyright
-        private const string COPYRIGHT = "© 2025 GUBUN. All Rights Reserved.";
+        private const string COPYRIGHT = "© 2026 GUBUN. All Rights Reserved.";
 
         private void Awake()
         {
@@ -3232,7 +3232,7 @@ namespace Gubun.UnityTools.Quests
             title: "Optimización de Unity: 10 Tips Esenciales",
             excerpt: "Mejora el rendimiento de tus proyectos Unity con estas técnicas probadas de profiling y optimización.",
             category: "unity",
-            date: "2025-04-15",
+            date: "2026-04-15",
             readTime: "8 min",
             image: "🎯",
             featured: true
@@ -3242,7 +3242,7 @@ namespace Gubun.UnityTools.Quests
             title: "Blueprints vs C++ en Unreal Engine",
             excerpt: "Cuándo usar cada approach: guía práctica para decidir entre visual scripting y código nativo.",
             category: "unreal",
-            date: "2025-04-12",
+            date: "2026-04-12",
             readTime: "6 min",
             image: "🔷",
             featured: true
@@ -3252,7 +3252,7 @@ namespace Gubun.UnityTools.Quests
             title: "Introducción a Godot 4.0",
             excerpt: "Novedades del motor open source: nuevo renderer, mejoras en GDScript y sistema de nodos mejorado.",
             category: "godot",
-            date: "2025-04-10",
+            date: "2026-04-10",
             readTime: "5 min",
             image: "🤖",
             featured: true
@@ -3262,7 +3262,7 @@ namespace Gubun.UnityTools.Quests
             title: "Herramientas Imprescindibles para GameDev en Windows",
             excerpt: "Las mejores aplicaciones gratuitas que todo desarrollador de juegos debe tener instaladas.",
             category: "herramientas",
-            date: "2025-04-08",
+            date: "2026-04-08",
             readTime: "4 min",
             image: "🛠️",
             featured: false
@@ -3272,7 +3272,7 @@ namespace Gubun.UnityTools.Quests
             title: "Sistemas de Input Modernos en Unity",
             excerpt: "Migrando del Input Manager al nuevo Input System con ejemplos prácticos de implementación.",
             category: "unity",
-            date: "2025-04-05",
+            date: "2026-04-05",
             readTime: "7 min",
             image: "🎮",
             featured: false

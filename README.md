@@ -164,4 +164,4 @@ const user = await GubunDB.getCurrentUser();
 
 ## Licencia
 
-Todos los derechos reservados © 2025 Gubun
+Todos los derechos reservados © 2026 Gubun
