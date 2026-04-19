@@ -37,13 +37,15 @@ CREATE TABLE IF NOT EXISTS scripts (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Downloads tracking table
+-- Downloads tracking table (enhanced with metadata)
 CREATE TABLE IF NOT EXISTS downloads (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     item_id UUID NOT NULL,
     type TEXT NOT NULL CHECK (type IN ('tool', 'script')),
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
     ip_hash TEXT,
+    user_agent TEXT,
+    referrer TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -154,87 +156,27 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Insert sample data
-INSERT INTO tools (name, category, description, tags, icon, link, featured) VALUES
-('PowerToys', 'sistema', 'Conjunto de utilidades para usuarios avanzados de Windows. Incluye FancyZones, PowerRename, Color Picker y más.', ARRAY['Microsoft', 'Productividad', 'Gratis'], '🧰', 'https://github.com/microsoft/PowerToys', true),
-('Windows Terminal', 'desarrollo', 'Terminal moderna con pestañas, paneles divididos, aceleración GPU y soporte para múltiples shells.', ARRAY['Microsoft', 'Terminal', 'Gratis'], '💻', 'https://github.com/microsoft/terminal', true),
-('ShareX', 'multimedia', 'Captura de pantalla avanzada con anotaciones, editor integrado y múltiples destinos de subida.', ARRAY['Captura', 'Open Source', 'Gratis'], '📸', 'https://getsharex.com/', true),
-('7-Zip', 'sistema', 'Compresión de archivos con alta ratio y soporte para múltiples formatos incluyendo ZIP, RAR, TAR.', ARRAY['Compresión', 'Open Source', 'Gratis'], '📦', 'https://www.7-zip.org/', false),
-('VS Code', 'desarrollo', 'Editor de código ligero pero poderoso con IntelliSense, debugging integrado y miles de extensiones.', ARRAY['Microsoft', 'Editor', 'Gratis'], '📝', 'https://code.visualstudio.com/', false),
-('OBS Studio', 'multimedia', 'Software de streaming y grabación de video profesional con múltiples fuentes y escenas.', ARRAY['Streaming', 'Open Source', 'Gratis'], '🎥', 'https://obsproject.com/', false);
+-- Page views table (for analytics)
+CREATE TABLE IF NOT EXISTS page_views (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    page_path TEXT NOT NULL,
+    page_title TEXT,
+    ip_hash TEXT,
+    user_agent TEXT,
+    screen_size TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
-INSERT INTO scripts (name, engine, language, description, tags, icon, code, featured) VALUES
-('Player Controller 2D', 'unity', 'csharp', 'Controlador de personaje 2D completo con movimiento, salto, dash y sistema de coyote time.', ARRAY['2D', 'Plataformas', 'Física'], '🏃', 'using UnityEngine;
+-- Page views indexes
+CREATE INDEX IF NOT EXISTS idx_pageviews_path ON page_views(page_path);
+CREATE INDEX IF NOT EXISTS idx_pageviews_created ON page_views(created_at);
 
-public class PlayerController2D : MonoBehaviour
-{
-    [Header("Movement")]
-    public float moveSpeed = 8f;
-    public float jumpForce = 12f;
-    
-    private Rigidbody2D rb;
-    private bool isGrounded;
-    
-    void Start() => rb = GetComponent<Rigidbody2D>();
-    
-    void Update()
-    {
-        float moveInput = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-        
-        if (Input.GetButtonDown("Jump") && isGrounded)
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-    }
-}', true),
-('Third Person Camera', 'unity', 'csharp', 'Cámara en tercera persona con follow suave, rotación orbita y zoom con scroll.', ARRAY['Cámara', '3D', 'Input'], '📹', 'using UnityEngine;
+-- Enable RLS on page_views
+ALTER TABLE page_views ENABLE ROW LEVEL SECURITY;
 
-public class ThirdPersonCamera : MonoBehaviour
-{
-    public Transform target;
-    public float distance = 5f;
-    public float height = 2f;
-    public float smoothSpeed = 5f;
-    
-    void LateUpdate()
-    {
-        Vector3 targetPos = target.position + Vector3.up * height;
-        Vector3 desiredPos = targetPos - target.forward * distance;
-        
-        transform.position = Vector3.Lerp(transform.position, desiredPos, smoothSpeed * Time.deltaTime);
-        transform.LookAt(targetPos);
-    }
-}', true),
-('Health System', 'unreal', 'cpp', 'Sistema de salud replicable para multiplayer con eventos de daño y curación.', ARRAY['Gameplay', 'Multiplayer', 'Sistema'], '❤️', 'UCLASS()
-class MYGAME_API UHealthComponent : public UActorComponent
-{
-    GENERATED_BODY()
-    
-public:
-    UHealthComponent();
-    
-    UPROPERTY(Replicated, BlueprintReadOnly)
-    float CurrentHealth;
-    
-    UPROPERTY(EditDefaultsOnly)
-    float MaxHealth = 100.f;
-    
-    UFUNCTION(BlueprintCallable)
-    void TakeDamage(float Damage);
-    
-    UFUNCTION(BlueprintCallable)
-    void Heal(float Amount);
-};', true),
-('Inventory System', 'unity', 'csharp', 'Sistema de inventario con slots, stack de items, drag & drop y persistencia.', ARRAY['UI', 'Sistema', 'Datos'], '🎒', '[System.Serializable]
-public class InventorySlot
-{
-    public ItemData item;
-    public int quantity;
-    public int maxStack = 99;
-    
-    public bool CanAddItem(ItemData newItem, int amount)
-    {
-        if (item == null) return true;
-        if (item.id != newItem.id) return false;
-        return quantity + amount <= maxStack;
-    }
-}', false);
+-- Page views policies
+CREATE POLICY "Page views are viewable by authenticated users only" ON page_views
+    FOR SELECT USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Anyone can insert page views" ON page_views
+    FOR INSERT WITH CHECK (true);

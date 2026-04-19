@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initTooltips();
     initRealtimeStats();
     loadRealStats();
+    
+    // Track page view for analytics
+    if (typeof GubunDB !== 'undefined') {
+        GubunDB.trackPageView(window.location.pathname, document.title);
+    }
 });
 
 // Load real stats from Supabase

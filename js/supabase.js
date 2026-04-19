@@ -67,49 +67,101 @@ const GubunDB = {
         };
     },
     
-    // Record download
+    // Record download with metadata
     async recordDownload(itemId, type) {
-        const { error } = await supabaseClient
-            .from('downloads')
-            .insert([{
-                item_id: itemId,
-                type: type,
-                user_id: (await this.getCurrentUser())?.id || null
-            }]);
-        
-        if (error) throw error;
-        return true;
-    },
-    
-    // Record view (with IP deduplication)
-    async recordView(itemId, type) {
-        // Get IP hash for deduplication
-        const ipHash = await this.getIPHash();
-        
-        // Check if view exists in last hour
-        const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
-        const { data: existing } = await supabaseClient
-            .from('views')
-            .select('id')
-            .eq('item_id', itemId)
-            .eq('type', type)
-            .eq('ip_hash', ipHash)
-            .gte('created_at', oneHourAgo)
-            .single();
-        
-        if (!existing) {
+        try {
+            const user = await this.getCurrentUser();
+            const ipHash = await this.getIPHash();
+            
             const { error } = await supabaseClient
-                .from('views')
+                .from('downloads')
                 .insert([{
                     item_id: itemId,
                     type: type,
-                    ip_hash: ipHash
+                    user_id: user?.id || null,
+                    ip_hash: ipHash,
+                    user_agent: navigator.userAgent.slice(0, 200),
+                    referrer: document.referrer.slice(0, 200) || null
                 }]);
             
-            if (error) throw error;
+            if (error) {
+                console.error('Error recording download:', error);
+                return false;
+            }
+            
+            return true;
+        } catch (err) {
+            console.error('Failed to record download:', err);
+            return false;
         }
-        
-        return true;
+    },
+    
+    // Record view (with IP deduplication) - 30 min cooldown
+    async recordView(itemId, type) {
+        try {
+            const ipHash = await this.getIPHash();
+            
+            // Check if view exists in last 30 minutes
+            const thirtyMinutesAgo = new Date(Date.now() - 1800000).toISOString();
+            const { data: existing, error: checkError } = await supabaseClient
+                .from('views')
+                .select('id')
+                .eq('item_id', itemId)
+                .eq('type', type)
+                .eq('ip_hash', ipHash)
+                .gte('created_at', thirtyMinutesAgo)
+                .single();
+            
+            if (checkError && checkError.code !== 'PGRST116') {
+                console.error('Error checking existing view:', checkError);
+            }
+            
+            if (!existing) {
+                const { error } = await supabaseClient
+                    .from('views')
+                    .insert([{
+                        item_id: itemId,
+                        type: type,
+                        ip_hash: ipHash
+                    }]);
+                
+                if (error) {
+                    console.error('Error recording view:', error);
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (err) {
+            console.error('Failed to record view:', err);
+            return false;
+        }
+    },
+    
+    // Track page view for analytics
+    async trackPageView(pagePath, pageTitle) {
+        try {
+            const ipHash = await this.getIPHash();
+            
+            // Don't await, fire and forget
+            supabaseClient
+                .from('page_views')
+                .insert([{
+                    page_path: pagePath,
+                    page_title: pageTitle,
+                    ip_hash: ipHash,
+                    user_agent: navigator.userAgent.slice(0, 150),
+                    screen_size: `${window.screen.width}x${window.screen.height}`
+                }])
+                .then(({ error }) => {
+                    if (error) console.error('Error tracking page view:', error);
+                });
+            
+            return true;
+        } catch (err) {
+            console.error('Failed to track page view:', err);
+            return false;
+        }
     },
     
     // Toggle like
@@ -335,16 +387,28 @@ async function updateAuthUI() {
     if (existingAuth) existingAuth.remove();
     
     if (user) {
-        // Show user menu
+        // Show user menu with avatar
+        const userInitial = user.email.charAt(0).toUpperCase();
+        const userName = user.email.split('@')[0];
         const authLi = document.createElement('li');
         authLi.className = 'nav-auth';
         authLi.innerHTML = `
             <div class="user-menu">
-                <button class="nav-link" onclick="toggleUserMenu()">
-                    👤 ${user.email.split('@')[0]}
+                <button class="user-avatar-btn" onclick="toggleUserMenu()" title="${user.email}">
+                    <div class="user-avatar">${userInitial}</div>
+                    <span class="user-name">${userName}</span>
                 </button>
                 <div class="user-dropdown" id="user-dropdown" style="display:none;">
-                    <a href="#" onclick="handleSignOut();return false;">Cerrar sesión</a>
+                    <div class="user-dropdown-header">
+                        <div class="user-avatar-large">${userInitial}</div>
+                        <div class="user-info">
+                            <p class="user-email">${user.email}</p>
+                        </div>
+                    </div>
+                    <div class="user-dropdown-divider"></div>
+                    <a href="#" onclick="handleSignOut();return false;">
+                        <span>🚪</span> Cerrar sesión
+                    </a>
                 </div>
             </div>
         `;
