@@ -9,8 +9,6 @@ const GUBUN_DATA = {
             language: "csharp",
             description: "Controlador FPS profesional con movimiento WASD, salto, sprint, crouch, head bob, slope handling y ground detection avanzado.",
             tags: ["FPS", "Controller", "Movement", "WASD"],
-            downloads: 5420,
-            rating: 4.9,
             icon: "🎮",
             code: `/*
  * =============================================================================
@@ -345,8 +343,6 @@ namespace Gubun.UnityTools.Controllers
             language: "csharp",
             description: "Sistema de IA completo para enemigos: patrulla, persecución, ataque melee/range, cover system, y behavior tree integrado.",
             tags: ["AI", "Combat", "Enemy", "Behavior Tree"],
-            downloads: 4890,
-            rating: 4.8,
             icon: "🤖",
             code: `/*
  * =============================================================================
@@ -906,8 +902,6 @@ namespace Gubun.UnityTools.AI
             language: "csharp",
             description: "Sistema de inventario completo con slots, stack, drag & drop, crafting recipes, y sistema de categorías.",
             tags: ["Inventory", "Crafting", "UI", "Items"],
-            downloads: 5230,
-            rating: 4.9,
             icon: "🎒",
             code: `/*
  * =============================================================================
@@ -1439,8 +1433,6 @@ namespace Gubun.UnityTools.Inventory
             language: "csharp",
             description: "Sistema de guardado profesional con encriptación AES, compresión, múltiples slots, y autosave. Soporte para JSON y Binary.",
             tags: ["Save System", "Data", "Encryption", "Compression"],
-            downloads: 6100,
-            rating: 4.9,
             icon: "💾",
             code: `/*
  * =============================================================================
@@ -2029,8 +2021,6 @@ namespace Gubun.UnityTools.SaveSystem
             language: "csharp",
             description: "Sistema de diálogos completo con ramificaciones, choices, condiciones, y sistema de variables. Soporte para Yarn/JSON.",
             tags: ["Dialogue", "Narrative", "Story", "UI"],
-            downloads: 4350,
-            rating: 4.7,
             icon: "💬",
             code: `/*
  * =============================================================================
@@ -2588,8 +2578,6 @@ namespace Gubun.UnityTools.Dialogue
             language: "csharp",
             description: "Sistema de misiones completo con objetivos múltiples, progreso, rewards, y UI dinámica. Soporte para quests principales y secundarias.",
             tags: ["Quest", "Mission", "Objectives", "Progression"],
-            downloads: 3980,
-            rating: 4.8,
             icon: "📜",
             code: `/*
  * =============================================================================

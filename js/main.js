@@ -161,10 +161,6 @@ function createScriptCard(script) {
                     <pre style="margin:0;color:var(--text-secondary);white-space:pre-wrap;word-break:break-all;line-height:1.4;"><code>${codePreview}</code></pre>
                 </div>
                 <div class="card-footer">
-                    <div class="card-stats">
-                        <span class="card-stat">⬇ ${formatNumber(script.downloads)}</span>
-                        <span class="card-stat">★ ${script.rating}</span>
-                    </div>
                     <button class="btn btn-small btn-primary" onclick="showCodeModal('${script.id}')">Ver Código</button>
                 </div>
             </div>
@@ -195,15 +191,6 @@ function createPostCard(post) {
         ? `<a href="../scripts/#${post.relatedScript}" class="btn btn-small btn-primary" onclick="event.stopPropagation();">Ver script</a>`
         : '';
     
-    // Get real download count from related script (real data from GUBUN_DATA)
-    let downloadCount = 0;
-    if (post.relatedScript && GUBUN_DATA.scripts) {
-        const script = GUBUN_DATA.scripts.find(s => s.id === post.relatedScript);
-        if (script) {
-            downloadCount = script.downloads || 0;
-        }
-    }
-    
     return `
         <article class="card blog-card" onclick="showPostModal('${post.id}')" style="cursor:pointer;">
             <div class="card-image" style="display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--bg-darker);">
@@ -217,11 +204,6 @@ function createPostCard(post) {
                 </div>
                 <h3 class="card-title">${post.title}</h3>
                 <p class="card-description">${post.excerpt}</p>
-                ${downloadCount > 0 ? `
-                <div style="display:flex;align-items:center;gap:12px;margin:8px 0;font-size:0.8rem;color:var(--text-muted);">
-                    <span title="Descargas">⬇ ${formatNumber(downloadCount)} descargas</span>
-                </div>
-                ` : ''}
                 <div class="card-footer">
                     <span class="card-meta">${formatDate(post.date)}</span>
                     <div style="display:flex;gap:8px;" onclick="event.stopPropagation();">
@@ -248,14 +230,7 @@ async function showPostModal(postId) {
         isAuth = currentUser !== null;
     }
     
-    // Get real stats from Supabase
-    let downloadCount = 0;
-    if (post.relatedScript && GUBUN_DATA.scripts) {
-        const script = GUBUN_DATA.scripts.find(s => s.id === post.relatedScript);
-        if (script) downloadCount = script.downloads || 0;
-    }
-    
-    // Get real rating from Supabase
+    // Get real rating and comments from Supabase
     let rating = 0;
     let ratingCount = 0;
     let commentCount = 0;
@@ -303,12 +278,6 @@ async function showPostModal(postId) {
                         ${ratingDisplay}
                         ${ratingCount > 0 ? `<span style="color:var(--text-muted);font-size:0.875rem;">(${ratingCount} ${ratingCount === 1 ? 'voto' : 'votos'})</span>` : '<span style="color:var(--text-muted);font-size:0.875rem;">(Sin calificaciones)</span>'}
                     </div>
-                    ${downloadCount > 0 ? `
-                    <div style="display:flex;align-items:center;gap:6px;color:var(--text-muted);">
-                        <span>⬇</span>
-                        <span>${formatNumber(downloadCount)} descargas</span>
-                    </div>
-                    ` : ''}
                     ${commentCount > 0 ? `
                     <div style="display:flex;align-items:center;gap:6px;color:var(--text-muted);">
                         <span>💬</span>
