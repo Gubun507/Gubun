@@ -172,6 +172,13 @@ function createScriptCard(script) {
     `;
 }
 
+function renderStars(rating) {
+    const full = '★';
+    const empty = '☆';
+    const rounded = Math.round(rating);
+    return full.repeat(rounded) + empty.repeat(5 - rounded);
+}
+
 function createPostCard(post) {
     const categoryColors = {
         unity: 'tag-primary',
@@ -188,6 +195,24 @@ function createPostCard(post) {
         ? `<a href="../scripts/#${post.relatedScript}" class="btn btn-small btn-primary" onclick="event.stopPropagation();">Ver script</a>`
         : '';
     
+    // Get real download count from related script
+    let downloadCount = 0;
+    if (post.relatedScript && GUBUN_DATA.scripts) {
+        const script = GUBUN_DATA.scripts.find(s => s.id === post.relatedScript);
+        if (script) {
+            downloadCount = script.downloads || 0;
+        }
+    }
+    
+    // Get rating from post data
+    const rating = post.rating || 0;
+    const ratingCount = post.ratingCount || 0;
+    const commentCount = post.commentCount || 0;
+    
+    const ratingDisplay = rating > 0 
+        ? `<span style="color:var(--warning);" title="${rating}/5 estrellas">${renderStars(rating)}</span>`
+        : '<span style="color:var(--text-muted);">☆☆☆☆☆</span>';
+    
     return `
         <article class="card blog-card" onclick="showPostModal('${post.id}')" style="cursor:pointer;">
             <div class="card-image" style="display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--bg-darker);">
@@ -201,6 +226,11 @@ function createPostCard(post) {
                 </div>
                 <h3 class="card-title">${post.title}</h3>
                 <p class="card-description">${post.excerpt}</p>
+                <div style="display:flex;align-items:center;gap:12px;margin:8px 0;font-size:0.8rem;color:var(--text-muted);">
+                    <span title="Calificación">${ratingDisplay} ${rating > 0 ? `(${ratingCount})` : ''}</span>
+                    ${downloadCount > 0 ? `<span title="Descargas">⬇ ${formatNumber(downloadCount)}</span>` : ''}
+                    ${commentCount > 0 ? `<span title="Comentarios">💬 ${commentCount}</span>` : ''}
+                </div>
                 <div class="card-footer">
                     <span class="card-meta">${formatDate(post.date)}</span>
                     <div style="display:flex;gap:8px;" onclick="event.stopPropagation();">
@@ -213,18 +243,48 @@ function createPostCard(post) {
     `;
 }
 
-function showPostModal(postId) {
+async function showPostModal(postId) {
     if (!GUBUN_DATA || !GUBUN_DATA.posts) return;
     
     const post = GUBUN_DATA.posts.find(p => p.id === postId);
     if (!post) return;
     
+    // Check auth
+    let isAuth = false;
+    let currentUser = null;
+    if (typeof GubunDB !== 'undefined') {
+        currentUser = await GubunDB.getCurrentUser();
+        isAuth = currentUser !== null;
+    }
+    
+    // Get real stats
+    let downloadCount = 0;
+    if (post.relatedScript && GUBUN_DATA.scripts) {
+        const script = GUBUN_DATA.scripts.find(s => s.id === post.relatedScript);
+        if (script) downloadCount = script.downloads || 0;
+    }
+    
+    const rating = post.rating || 0;
+    const ratingCount = post.ratingCount || 0;
+    const commentCount = post.commentCount || 0;
+    
+    const ratingDisplay = rating > 0 
+        ? `<span style="color:var(--warning);font-size:1.2rem;">${renderStars(rating)}</span>`
+        : '<span style="color:var(--text-muted);">☆☆☆☆☆</span>';
+    
     const scriptLink = post.relatedScript 
         ? `<a href="../scripts/#${post.relatedScript}" class="btn btn-primary">📦 Descargar Script</a>` 
         : '';
     
+    // Check if user has rated
+    let userRating = 0;
+    if (isAuth && typeof GubunDB !== 'undefined') {
+        userRating = await GubunDB.getUserPostRating(postId);
+    }
+    
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
+    modal.id = `post-modal-${postId}`;
     modal.innerHTML = `
         <div class="modal" style="max-width:800px;max-height:90vh;overflow-y:auto;">
             <div class="modal-header">
@@ -239,8 +299,74 @@ function showPostModal(postId) {
                 <button class="modal-close" onclick="closeModal(this)">&times;</button>
             </div>
             <div class="modal-body" style="text-align:left;">
-                <div class="post-content" style="line-height:1.8;color:var(--text-secondary);">
+                <!-- Stats Bar -->
+                <div style="display:flex;gap:20px;padding:16px;background:var(--bg-darker);border-radius:var(--radius);margin-bottom:20px;flex-wrap:wrap;align-items:center;">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        ${ratingDisplay}
+                        <span style="color:var(--text-muted);font-size:0.875rem;">(${ratingCount} ${ratingCount === 1 ? 'voto' : 'votos'})</span>
+                    </div>
+                    ${downloadCount > 0 ? `
+                    <div style="display:flex;align-items:center;gap:6px;color:var(--text-muted);">
+                        <span>⬇</span>
+                        <span>${formatNumber(downloadCount)} descargas</span>
+                    </div>
+                    ` : ''}
+                    ${commentCount > 0 ? `
+                    <div style="display:flex;align-items:center;gap:6px;color:var(--text-muted);">
+                        <span>💬</span>
+                        <span>${commentCount} ${commentCount === 1 ? 'comentario' : 'comentarios'}</span>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <!-- Content -->
+                <div class="post-content" style="line-height:1.8;color:var(--text-secondary);margin-bottom:30px;">
                     ${post.content || '<p>' + post.excerpt + '</p>'}
+                </div>
+                
+                <!-- Rating Section -->
+                <div style="border-top:1px solid var(--border-color);padding-top:20px;margin-bottom:20px;">
+                    <h4 style="margin:0 0 16px 0;color:var(--text-primary);">⭐ Califica este tutorial</h4>
+                    ${isAuth ? `
+                    <div class="rating-input" style="display:flex;gap:8px;font-size:1.5rem;margin-bottom:12px;">
+                        ${[1,2,3,4,5].map(star => `
+                            <button class="star-btn" data-rating="${star}" onclick="submitPostRating('${postId}', ${star})" 
+                                style="background:none;border:none;cursor:pointer;color:${star <= userRating ? 'var(--warning)' : 'var(--text-muted)'};transition:transform 0.2s;"
+                                onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                                ${star <= userRating ? '★' : '☆'}
+                            </button>
+                        `).join('')}
+                    </div>
+                    ${userRating > 0 ? `<p style="color:var(--success);font-size:0.875rem;margin:0;">✓ Has calificado con ${userRating} estrellas</p>` : '<p style="color:var(--text-muted);font-size:0.875rem;margin:0;">Haz clic para calificar</p>'}
+                    ` : `
+                    <p style="color:var(--text-muted);font-size:0.875rem;">
+                        <a href="#" onclick="closeModal(this); showAuthModal('signin'); return false;" style="color:var(--accent);">Inicia sesión</a> para calificar este tutorial
+                    </p>
+                    `}
+                </div>
+                
+                <!-- Comments Section -->
+                <div style="border-top:1px solid var(--border-color);padding-top:20px;">
+                    <h4 style="margin:0 0 16px 0;color:var(--text-primary);">💬 Comentarios (${commentCount})</h4>
+                    
+                    ${isAuth ? `
+                    <div class="comment-form" style="margin-bottom:20px;">
+                        <textarea id="comment-input-${postId}" placeholder="Escribe tu comentario..." 
+                            style="width:100%;padding:12px;border:1px solid var(--border-color);border-radius:var(--radius);background:var(--bg-darker);color:var(--text-primary);resize:vertical;min-height:80px;font-family:inherit;"></textarea>
+                        <button class="btn btn-primary" style="margin-top:8px;" onclick="submitPostComment('${postId}')">Publicar comentario</button>
+                    </div>
+                    ` : `
+                    <div style="padding:16px;background:var(--bg-darker);border-radius:var(--radius);text-align:center;margin-bottom:20px;">
+                        <p style="color:var(--text-muted);margin:0;">
+                            <a href="#" onclick="closeModal(this); showAuthModal('signin'); return false;" style="color:var(--accent);">Inicia sesión</a> para comentar
+                        </p>
+                    </div>
+                    `}
+                    
+                    <!-- Comments List -->
+                    <div id="comments-list-${postId}" class="comments-list" style="display:flex;flex-direction:column;gap:16px;">
+                        <p style="color:var(--text-muted);text-align:center;padding:20px;">Cargando comentarios...</p>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -256,6 +382,112 @@ function showPostModal(postId) {
     modal.addEventListener('click', (e) => {
         if (e.target === modal) closeModal(modal.querySelector('.modal-close'));
     });
+    
+    // Load comments
+    loadPostComments(postId);
+}
+
+async function submitPostRating(postId, rating) {
+    if (typeof GubunDB === 'undefined') return;
+    
+    const success = await GubunDB.ratePost(postId, rating);
+    if (success) {
+        showToast(`✓ Calificado con ${rating} estrellas`, 'success');
+        // Update UI
+        const post = GUBUN_DATA.posts.find(p => p.id === postId);
+        if (post) {
+            post.ratingCount = (post.ratingCount || 0) + 1;
+            post.rating = ((post.rating || 0) * (post.ratingCount - 1) + rating) / post.ratingCount;
+        }
+        // Re-open modal to refresh
+        closeModal(document.querySelector(`#post-modal-${postId} .modal-close`));
+        setTimeout(() => showPostModal(postId), 300);
+    } else {
+        showToast('Error al calificar', 'error');
+    }
+}
+
+async function submitPostComment(postId) {
+    const input = document.getElementById(`comment-input-${postId}`);
+    if (!input) return;
+    
+    const content = input.value.trim();
+    if (!content) {
+        showToast('Escribe un comentario', 'error');
+        return;
+    }
+    
+    if (typeof GubunDB === 'undefined') return;
+    
+    const success = await GubunDB.addPostComment(postId, content);
+    if (success) {
+        showToast('✓ Comentario publicado', 'success');
+        input.value = '';
+        loadPostComments(postId);
+        // Update count
+        const post = GUBUN_DATA.posts.find(p => p.id === postId);
+        if (post) post.commentCount = (post.commentCount || 0) + 1;
+    } else {
+        showToast('Error al publicar', 'error');
+    }
+}
+
+async function loadPostComments(postId) {
+    const container = document.getElementById(`comments-list-${postId}`);
+    if (!container) return;
+    
+    if (typeof GubunDB === 'undefined') {
+        container.innerHTML = '<p style="color:var(--text-muted);text-align:center;">Conecta Supabase para ver comentarios</p>';
+        return;
+    }
+    
+    const comments = await GubunDB.getPostComments(postId);
+    
+    if (!comments || comments.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;">Sin comentarios. ¡Sé el primero!</p>';
+        return;
+    }
+    
+    const currentUser = await GubunDB.getCurrentUser();
+    
+    container.innerHTML = comments.map(comment => {
+        const isOwner = currentUser && comment.user_id === currentUser.id;
+        return `
+            <div class="comment" style="padding:16px;background:var(--bg-darker);border-radius:var(--radius);border:1px solid var(--border-color);">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:0.875rem;">
+                            ${(comment.user_email || 'U').charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <p style="margin:0;font-weight:500;color:var(--text-primary);font-size:0.875rem;">${comment.user_email || 'Usuario'}</p>
+                            <p style="margin:0;color:var(--text-muted);font-size:0.75rem;">${formatDate(comment.created_at)}</p>
+                        </div>
+                    </div>
+                    ${isOwner ? `
+                    <button onclick="deletePostComment('${postId}', '${comment.id}')" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:1.2rem;opacity:0.7;" title="Eliminar">🗑️</button>
+                    ` : ''}
+                </div>
+                <p style="margin:0;color:var(--text-secondary);line-height:1.5;">${escapeHtml(comment.content)}</p>
+            </div>
+        `;
+    }).join('');
+}
+
+async function deletePostComment(postId, commentId) {
+    if (!confirm('¿Eliminar este comentario?')) return;
+    
+    if (typeof GubunDB === 'undefined') return;
+    
+    const success = await GubunDB.deletePostComment(commentId);
+    if (success) {
+        showToast('✓ Comentario eliminado', 'success');
+        loadPostComments(postId);
+        const post = GUBUN_DATA.posts.find(p => p.id === postId);
+        if (post) post.commentCount = Math.max(0, (post.commentCount || 0) - 1);
+    } else {
+        showToast('Error al eliminar', 'error');
+    }
 }
 
 async function showCodeModal(scriptId) {

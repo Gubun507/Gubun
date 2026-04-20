@@ -305,6 +305,144 @@ const GubunDB = {
             return false;
         }
         return true;
+    },
+    
+    // Post Ratings
+    async ratePost(postId, rating) {
+        const user = await this.getCurrentUser();
+        if (!user) return false;
+        
+        try {
+            // Upsert rating (insert or update)
+            const { error } = await supabaseClient
+                .from('post_ratings')
+                .upsert({
+                    post_id: postId,
+                    user_id: user.id,
+                    rating: rating,
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id,post_id'
+                });
+            
+            if (error) throw error;
+            return true;
+        } catch (err) {
+            console.error('Error rating post:', err);
+            return false;
+        }
+    },
+    
+    async getUserPostRating(postId) {
+        const user = await this.getCurrentUser();
+        if (!user) return 0;
+        
+        try {
+            const { data, error } = await supabaseClient
+                .from('post_ratings')
+                .select('rating')
+                .eq('post_id', postId)
+                .eq('user_id', user.id)
+                .single();
+            
+            if (error || !data) return 0;
+            return data.rating;
+        } catch (err) {
+            return 0;
+        }
+    },
+    
+    async getPostRating(postId) {
+        try {
+            const { data, error } = await supabaseClient
+                .from('post_ratings')
+                .select('rating')
+                .eq('post_id', postId);
+            
+            if (error) throw error;
+            if (!data || data.length === 0) return { avg: 0, count: 0 };
+            
+            const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+            return { avg: Math.round(avg * 10) / 10, count: data.length };
+        } catch (err) {
+            console.error('Error getting post rating:', err);
+            return { avg: 0, count: 0 };
+        }
+    },
+    
+    // Post Comments
+    async addPostComment(postId, content) {
+        const user = await this.getCurrentUser();
+        if (!user) return false;
+        
+        try {
+            const { error } = await supabaseClient
+                .from('post_comments')
+                .insert([{
+                    post_id: postId,
+                    user_id: user.id,
+                    content: content
+                }]);
+            
+            if (error) throw error;
+            return true;
+        } catch (err) {
+            console.error('Error adding comment:', err);
+            return false;
+        }
+    },
+    
+    async getPostComments(postId) {
+        try {
+            const { data, error } = await supabaseClient
+                .from('post_comments')
+                .select('*, users:user_id(email)')
+                .eq('post_id', postId)
+                .order('created_at', { ascending: false });
+            
+            if (error) throw error;
+            
+            return data.map(c => ({
+                ...c,
+                user_email: c.users?.email || 'Usuario'
+            })) || [];
+        } catch (err) {
+            console.error('Error getting comments:', err);
+            return [];
+        }
+    },
+    
+    async deletePostComment(commentId) {
+        const user = await this.getCurrentUser();
+        if (!user) return false;
+        
+        try {
+            const { error } = await supabaseClient
+                .from('post_comments')
+                .delete()
+                .eq('id', commentId)
+                .eq('user_id', user.id);
+            
+            if (error) throw error;
+            return true;
+        } catch (err) {
+            console.error('Error deleting comment:', err);
+            return false;
+        }
+    },
+    
+    async getPostCommentCount(postId) {
+        try {
+            const { count, error } = await supabaseClient
+                .from('post_comments')
+                .select('*', { count: 'exact', head: true })
+                .eq('post_id', postId);
+            
+            if (error) throw error;
+            return count || 0;
+        } catch (err) {
+            return 0;
+        }
     }
 };
 

@@ -3241,7 +3241,10 @@ namespace Gubun.UnityTools.Quests
             readTime: "12 min",
             image: "🎮",
             featured: true,
-            relatedScript: "script-1"
+            relatedScript: "script-1",
+            rating: 4.8,
+            ratingCount: 12,
+            commentCount: 3
         },
         {
             id: "post-2",
@@ -3256,7 +3259,10 @@ namespace Gubun.UnityTools.Quests
             readTime: "10 min",
             image: "🤖",
             featured: true,
-            relatedScript: "script-2"
+            relatedScript: "script-2",
+            rating: 4.5,
+            ratingCount: 8,
+            commentCount: 2
         },
         {
             id: "post-3",
@@ -3277,7 +3283,10 @@ public class ItemData : ScriptableObject {
             readTime: "15 min",
             image: "🎒",
             featured: false,
-            relatedScript: "script-3"
+            relatedScript: "script-3",
+            rating: 4.2,
+            ratingCount: 6,
+            commentCount: 1
         },
         {
             id: "post-4",
@@ -3295,7 +3304,10 @@ SaveManager.Instance.AutoSave(intervalSeconds);</code></pre>
             readTime: "11 min",
             image: "💾",
             featured: false,
-            relatedScript: "script-4"
+            relatedScript: "script-4",
+            rating: 4.9,
+            ratingCount: 15,
+            commentCount: 5
         },
         {
             id: "post-5",
@@ -3314,7 +3326,10 @@ SaveManager.Instance.AutoSave(intervalSeconds);</code></pre>
             readTime: "9 min",
             image: "💬",
             featured: false,
-            relatedScript: "script-5"
+            relatedScript: "script-5",
+            rating: 4.3,
+            ratingCount: 4,
+            commentCount: 0
         },
         {
             id: "post-6",
@@ -3332,7 +3347,10 @@ QuestManager.Instance.CompleteQuest("quest_001");</code></pre>`,
             readTime: "13 min",
             image: "📜",
             featured: false,
-            relatedScript: "script-6"
+            relatedScript: "script-6",
+            rating: 4.6,
+            ratingCount: 9,
+            commentCount: 2
         }
     ],
     

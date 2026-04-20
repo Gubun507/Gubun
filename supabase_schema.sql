@@ -180,3 +180,67 @@ CREATE POLICY "Page views are viewable by authenticated users only" ON page_view
 
 CREATE POLICY "Anyone can insert page views with valid data" ON page_views
     FOR INSERT WITH CHECK (page_path IS NOT NULL AND length(page_path) > 0);
+
+-- Post ratings table (stars for blog posts)
+CREATE TABLE IF NOT EXISTS post_ratings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    post_id TEXT NOT NULL,
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(user_id, post_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_post_ratings_post ON post_ratings(post_id);
+CREATE INDEX IF NOT EXISTS idx_post_ratings_user ON post_ratings(user_id);
+
+ALTER TABLE post_ratings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Post ratings are viewable by everyone" ON post_ratings
+    FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated users can rate posts" ON post_ratings
+    FOR INSERT WITH CHECK (auth.role() = 'authenticated' AND user_id = auth.uid());
+
+CREATE POLICY "Users can update their own ratings" ON post_ratings
+    FOR UPDATE USING (user_id = auth.uid());
+
+-- Post comments table
+CREATE TABLE IF NOT EXISTS post_comments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    post_id TEXT NOT NULL,
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    content TEXT NOT NULL CHECK (length(content) > 0),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_post_comments_post ON post_comments(post_id);
+CREATE INDEX IF NOT EXISTS idx_post_comments_user ON post_comments(user_id);
+CREATE INDEX IF NOT EXISTS idx_post_comments_created ON post_comments(created_at DESC);
+
+ALTER TABLE post_comments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Post comments are viewable by everyone" ON post_comments
+    FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated users can comment" ON post_comments
+    FOR INSERT WITH CHECK (auth.role() = 'authenticated' AND user_id = auth.uid());
+
+CREATE POLICY "Users can update their own comments" ON post_comments
+    FOR UPDATE USING (user_id = auth.uid());
+
+CREATE POLICY "Users can delete their own comments" ON post_comments
+    FOR DELETE USING (user_id = auth.uid());
+
+-- Function to get post stats (avg rating and comment count)
+CREATE OR REPLACE FUNCTION get_post_stats(post_id_param TEXT)
+RETURNS TABLE(avg_rating NUMERIC, rating_count BIGINT, comment_count BIGINT) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        COALESCE((SELECT ROUND(AVG(rating), 1) FROM post_ratings WHERE post_id = post_id_param), 0),
+        (SELECT COUNT(*) FROM post_ratings WHERE post_id = post_id_param),
+        (SELECT COUNT(*) FROM post_comments WHERE post_id = post_id_param);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
