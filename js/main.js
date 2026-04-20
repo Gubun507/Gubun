@@ -137,6 +137,10 @@ function createScriptCard(script) {
         godot: 'tag-warning'
     };
     
+    // Get first 5 lines of code for preview
+    const codeLines = script.code.split('\n').slice(0, 5).join('\n');
+    const codePreview = escapeHtml(codeLines);
+    
     return `
         <article class="card script-card">
             <div class="card-body">
@@ -151,6 +155,10 @@ function createScriptCard(script) {
                 <div class="card-tags">
                     <span class="tag ${engineColors[script.engine] || ''}">${script.engine}</span>
                     <span class="tag">${script.language}</span>
+                </div>
+                <div class="code-preview-mini" style="margin:12px 0;background:var(--bg-darker);border-radius:var(--radius);padding:12px;font-family:monospace;font-size:0.75rem;overflow:hidden;">
+                    <div style="color:var(--text-muted);margin-bottom:4px;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;">Preview (5 líneas)</div>
+                    <pre style="margin:0;color:var(--text-secondary);white-space:pre-wrap;word-break:break-all;line-height:1.4;"><code>${codePreview}</code></pre>
                 </div>
                 <div class="card-footer">
                     <div class="card-stats">
@@ -251,22 +259,24 @@ function showPostModal(postId) {
 }
 
 async function showCodeModal(scriptId) {
-    // Check authentication first
-    if (typeof GubunDB !== 'undefined') {
-        const isAuth = await GubunDB.requireAuth();
-        if (!isAuth) {
-            showToast('Debes iniciar sesión para ver scripts', 'error');
-            return;
-        }
-    }
-    
     const script = GUBUN_DATA.scripts.find(s => s.id === scriptId);
     if (!script) return;
+    
+    // Check authentication
+    let isAuth = false;
+    if (typeof GubunDB !== 'undefined') {
+        isAuth = await GubunDB.getCurrentUser() !== null;
+    }
+    
+    // Show preview (first 5 lines) to everyone, full code only to logged users
+    const codeLines = script.code.split('\n');
+    const previewLines = 5;
+    const displayCode = isAuth ? script.code : codeLines.slice(0, previewLines).join('\n') + '\n\n// 🔒 Inicia sesión para ver el código completo y descargar';
     
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
-        <div class="modal">
+        <div class="modal" style="max-width:800px;">
             <div class="modal-header">
                 <h3 class="modal-title">${script.name}</h3>
                 <button class="modal-close" onclick="closeModal(this)">&times;</button>
@@ -276,22 +286,32 @@ async function showCodeModal(scriptId) {
                 <div class="code-preview">
                     <div class="code-header">
                         <span class="code-lang">${script.language}</span>
-                        <button class="code-copy" onclick="copyCode(this)" title="Copiar">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                        </button>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            ${!isAuth ? '<span style="font-size:0.75rem;color:var(--warning);">🔒 Preview limitado</span>' : ''}
+                            <button class="code-copy" onclick="copyCode(this)" title="${isAuth ? 'Copiar' : 'Copiar preview'}" ${!isAuth ? 'disabled style="opacity:0.5;"' : ''}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <pre class="code-content"><code>${escapeHtml(script.code)}</code></pre>
+                    <pre class="code-content" style="max-height:400px;overflow:auto;"><code>${escapeHtml(displayCode)}</code></pre>
                 </div>
                 <div class="card-tags" style="margin-top:16px;">
                     ${script.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                 </div>
+                ${!isAuth ? `
+                <div style="margin-top:20px;padding:16px;background:linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);border:1px solid var(--warning);border-radius:var(--radius);text-align:center;">
+                    <p style="margin:0 0 12px 0;color:var(--text-primary);font-weight:500;">🔒 Acceso completo requiere inicio de sesión</p>
+                    <p style="margin:0 0 16px 0;font-size:0.875rem;color:var(--text-secondary);">Inicia sesión para ver el código completo, copiar y descargar el script.</p>
+                    <button class="btn btn-primary" onclick="closeModal(this); showAuthModal('signin');">Iniciar sesión</button>
+                </div>
+                ` : ''}
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal(this)">Cerrar</button>
-                <button class="btn btn-primary" onclick="downloadScript('${script.id}')">⬇ Descargar</button>
+                <button class="btn btn-primary" onclick="downloadScript('${script.id}')" ${!isAuth ? 'disabled style="opacity:0.5;"' : ''}>⬇ Descargar</button>
             </div>
         </div>
     `;
@@ -436,3 +456,17 @@ window.closeModal = closeModal;
 window.copyCode = copyCode;
 window.downloadScript = downloadScript;
 window.showToast = showToast;
+
+// Keep Render free tier awake - ping every 7 minutes
+(function keepAlive() {
+    const pingInterval = 7 * 60 * 1000; // 7 minutes
+    const pingUrl = window.location.origin + '/index.html';
+    
+    setInterval(() => {
+        fetch(pingUrl, { method: 'HEAD', mode: 'no-cors' })
+            .then(() => console.log('[KeepAlive] Ping successful'))
+            .catch(() => console.log('[KeepAlive] Ping failed'));
+    }, pingInterval);
+    
+    console.log('[KeepAlive] Initialized - pinging every 7 minutes');
+})();
