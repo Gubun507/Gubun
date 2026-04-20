@@ -3276,6 +3276,72 @@ namespace Gubun.UnityTools.Quests
             readTime: "7 min",
             image: "🎮",
             featured: false
+        },
+        {
+            id: "post-6",
+            title: "Tutorial: FPS Controller Profesional en Unity",
+            excerpt: "Guía completa para implementar el Advanced First Person Controller con movimiento WASD, salto, sprint y head bob.",
+            category: "unity",
+            date: "2026-04-18",
+            readTime: "12 min",
+            image: "🎮",
+            featured: true,
+            relatedScript: "script-1"
+        },
+        {
+            id: "post-7",
+            title: "Sistema de IA para Enemigos: Patrol, Chase & Attack",
+            excerpt: "Implementa comportamiento avanzado de enemigos con patrullaje, detección de jugador y sistemas de combate.",
+            category: "unity",
+            date: "2026-04-17",
+            readTime: "10 min",
+            image: "🤖",
+            featured: true,
+            relatedScript: "script-2"
+        },
+        {
+            id: "post-8",
+            title: "Inventario y Crafting: Sistema Modular Completo",
+            excerpt: "Tutorial paso a paso para crear un sistema de inventario con slots, stack, drag & drop y recetas de crafteo.",
+            category: "unity",
+            date: "2026-04-16",
+            readTime: "15 min",
+            image: "🎒",
+            featured: false,
+            relatedScript: "script-3"
+        },
+        {
+            id: "post-9",
+            title: "Save System Pro: Guardado Encriptado en Unity",
+            excerpt: "Implementa un sistema de guardado profesional con AES-256, compresión LZ4 y múltiples slots.",
+            category: "unity",
+            date: "2026-04-14",
+            readTime: "11 min",
+            image: "💾",
+            featured: false,
+            relatedScript: "script-4"
+        },
+        {
+            id: "post-10",
+            title: "Sistema de Diálogos con Ramificaciones",
+            excerpt: "Crea conversaciones dinámicas con choices condicionales, variables y soporte para Yarn/JSON.",
+            category: "unity",
+            date: "2026-04-13",
+            readTime: "9 min",
+            image: "💬",
+            featured: false,
+            relatedScript: "script-5"
+        },
+        {
+            id: "post-11",
+            title: "Quest System: Misiones con Objetivos Múltiples",
+            excerpt: "Implementa un sistema de quests completo con objetivos, progresión, rewards y UI dinámica.",
+            category: "unity",
+            date: "2026-04-11",
+            readTime: "13 min",
+            image: "📜",
+            featured: false,
+            relatedScript: "script-6"
         }
     ],
     

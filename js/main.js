@@ -172,6 +172,14 @@ function createPostCard(post) {
         herramientas: ''
     };
     
+    const scriptBadge = post.relatedScript 
+        ? `<span class="tag tag-success" title="Incluye script descargable">📦 Script</span>` 
+        : '';
+    
+    const scriptButton = post.relatedScript 
+        ? `<a href="../scripts/#${post.relatedScript}" class="btn btn-small btn-primary" onclick="event.stopPropagation();">Ver script</a>`
+        : '';
+    
     return `
         <article class="card blog-card">
             <div class="card-image" style="display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--bg-darker);">
@@ -180,13 +188,17 @@ function createPostCard(post) {
             <div class="card-body">
                 <div class="card-meta">
                     <span class="tag ${categoryColors[post.category] || ''}">${post.category}</span>
+                    ${scriptBadge}
                     <span>${post.readTime} de lectura</span>
                 </div>
                 <h3 class="card-title">${post.title}</h3>
                 <p class="card-description">${post.excerpt}</p>
                 <div class="card-footer">
                     <span class="card-meta">${formatDate(post.date)}</span>
-                    <a href="blog/${post.id}.html" class="btn btn-small btn-outline">Leer más</a>
+                    <div style="display:flex;gap:8px;">
+                        ${scriptButton}
+                        <a href="blog/${post.id}.html" class="btn btn-small btn-outline">Leer más</a>
+                    </div>
                 </div>
             </div>
         </article>

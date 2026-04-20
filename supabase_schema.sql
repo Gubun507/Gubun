@@ -116,12 +116,12 @@ CREATE POLICY "Downloads are viewable by everyone" ON downloads
 CREATE POLICY "Authenticated users can insert downloads" ON downloads
     FOR INSERT WITH CHECK (auth.role() = 'authenticated' OR ip_hash IS NOT NULL);
 
--- Views: Insert only
+-- Views: Insert only (with minimal validation)
 CREATE POLICY "Views are viewable by everyone" ON views
     FOR SELECT USING (true);
 
-CREATE POLICY "Anyone can insert views" ON views
-    FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone can insert views with valid ip" ON views
+    FOR INSERT WITH CHECK (ip_hash IS NOT NULL AND length(ip_hash) > 0);
 
 -- Likes: Users manage own likes
 CREATE POLICY "Likes are viewable by everyone" ON likes
@@ -178,5 +178,5 @@ ALTER TABLE page_views ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Page views are viewable by authenticated users only" ON page_views
     FOR SELECT USING (auth.role() = 'authenticated');
 
-CREATE POLICY "Anyone can insert page views" ON page_views
-    FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone can insert page views with valid data" ON page_views
+    FOR INSERT WITH CHECK (page_path IS NOT NULL AND length(page_path) > 0);
