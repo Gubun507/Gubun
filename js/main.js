@@ -205,7 +205,7 @@ function createPostCard(post) {
                     <span class="card-meta">${formatDate(post.date)}</span>
                     <div style="display:flex;gap:8px;" onclick="event.stopPropagation();">
                         ${scriptButton}
-                        <button class="btn btn-small btn-outline">Leer más</button>
+                        <button class="btn btn-small btn-outline" onclick="showPostModal('${post.id}')">Leer más</button>
                     </div>
                 </div>
             </div>
