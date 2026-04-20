@@ -181,7 +181,7 @@ function createPostCard(post) {
         : '';
     
     return `
-        <article class="card blog-card">
+        <article class="card blog-card" onclick="showPostModal('${post.id}')" style="cursor:pointer;">
             <div class="card-image" style="display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--bg-darker);">
                 ${post.image}
             </div>
@@ -195,14 +195,59 @@ function createPostCard(post) {
                 <p class="card-description">${post.excerpt}</p>
                 <div class="card-footer">
                     <span class="card-meta">${formatDate(post.date)}</span>
-                    <div style="display:flex;gap:8px;">
+                    <div style="display:flex;gap:8px;" onclick="event.stopPropagation();">
                         ${scriptButton}
-                        <a href="blog/${post.id}.html" class="btn btn-small btn-outline">Leer más</a>
+                        <button class="btn btn-small btn-outline">Leer más</button>
                     </div>
                 </div>
             </div>
         </article>
     `;
+}
+
+function showPostModal(postId) {
+    if (!GUBUN_DATA || !GUBUN_DATA.posts) return;
+    
+    const post = GUBUN_DATA.posts.find(p => p.id === postId);
+    if (!post) return;
+    
+    const scriptLink = post.relatedScript 
+        ? `<a href="../scripts/#${post.relatedScript}" class="btn btn-primary">📦 Descargar Script</a>` 
+        : '';
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal" style="max-width:800px;max-height:90vh;overflow-y:auto;">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:2rem;">${post.image}</span>
+                    <div>
+                        <h3 class="modal-title">${post.title}</h3>
+                        <span class="tag tag-primary">${post.category}</span>
+                        <span style="color:var(--text-muted);font-size:0.875rem;margin-left:8px;">${post.readTime} de lectura</span>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeModal(this)">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align:left;">
+                <div class="post-content" style="line-height:1.8;color:var(--text-secondary);">
+                    ${post.content || '<p>' + post.excerpt + '</p>'}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal(this)">Cerrar</button>
+                ${scriptLink}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    requestAnimationFrame(() => modal.classList.add('active'));
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal(modal.querySelector('.modal-close'));
+    });
 }
 
 async function showCodeModal(scriptId) {
@@ -385,6 +430,7 @@ function initTooltips() {
 window.createToolCard = createToolCard;
 window.createScriptCard = createScriptCard;
 window.createPostCard = createPostCard;
+window.showPostModal = showPostModal;
 window.showCodeModal = showCodeModal;
 window.closeModal = closeModal;
 window.copyCode = copyCode;

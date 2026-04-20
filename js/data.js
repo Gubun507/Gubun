@@ -3229,58 +3229,13 @@ namespace Gubun.UnityTools.Quests
     posts: [
         {
             id: "post-1",
-            title: "Optimización de Unity: 10 Tips Esenciales",
-            excerpt: "Mejora el rendimiento de tus proyectos Unity con estas técnicas probadas de profiling y optimización.",
-            category: "unity",
-            date: "2026-04-15",
-            readTime: "8 min",
-            image: "🎯",
-            featured: true
-        },
-        {
-            id: "post-2",
-            title: "Blueprints vs C++ en Unreal Engine",
-            excerpt: "Cuándo usar cada approach: guía práctica para decidir entre visual scripting y código nativo.",
-            category: "unreal",
-            date: "2026-04-12",
-            readTime: "6 min",
-            image: "🔷",
-            featured: true
-        },
-        {
-            id: "post-3",
-            title: "Introducción a Godot 4.0",
-            excerpt: "Novedades del motor open source: nuevo renderer, mejoras en GDScript y sistema de nodos mejorado.",
-            category: "godot",
-            date: "2026-04-10",
-            readTime: "5 min",
-            image: "🤖",
-            featured: true
-        },
-        {
-            id: "post-4",
-            title: "Herramientas Imprescindibles para GameDev en Windows",
-            excerpt: "Las mejores aplicaciones gratuitas que todo desarrollador de juegos debe tener instaladas.",
-            category: "herramientas",
-            date: "2026-04-08",
-            readTime: "4 min",
-            image: "🛠️",
-            featured: false
-        },
-        {
-            id: "post-5",
-            title: "Sistemas de Input Modernos en Unity",
-            excerpt: "Migrando del Input Manager al nuevo Input System con ejemplos prácticos de implementación.",
-            category: "unity",
-            date: "2026-04-05",
-            readTime: "7 min",
-            image: "🎮",
-            featured: false
-        },
-        {
-            id: "post-6",
             title: "Tutorial: FPS Controller Profesional en Unity",
             excerpt: "Guía completa para implementar el Advanced First Person Controller con movimiento WASD, salto, sprint y head bob.",
+            content: `<h2>Introducción</h2><p>El <strong>Advanced First Person Controller</strong> es un sistema completo para Unity que proporciona movimiento fluido y profesional para juegos en primera persona.</p>
+            <h3>Características Principales</h3><ul><li>✅ Movimiento WASD con aceleración/desaceleración suave</li><li>✅ Sistema de salto con ground detection</li><li>✅ Sprint y Crouch con multiplicadores de velocidad</li><li>✅ Head bob animado al caminar</li><li>✅ Manejo de pendientes (slopes)</li><li>✅ Ground detection con múltiples raycasts</li></ul>
+            <h3>Instalación</h3><p>1. Descarga el script desde la sección Scripts</p><p>2. Crea un objeto vacío en tu escena</p><p>3. Agrega el componente <code>CharacterController</code></p><p>4. Adjunta el script <code>FirstPersonController</code></p>
+            <h3>Configuración</h3><p>Todas las variables son configurables desde el Inspector:</p><ul><li><strong>Walk Speed:</strong> Velocidad base de caminata (default: 5)</li><li><strong>Sprint Multiplier:</strong> Multiplicador al correr (default: 1.8)</li><li><strong>Jump Force:</strong> Fuerza de salto (default: 8)</li><li><strong>Head Bob:</strong> Amplitud y frecuencia del movimiento de cabeza</li></ul>
+            <h3>Uso</h3><p>El controlador detecta automáticamente el input del jugador. No requiere configuración adicional de cámaras - crea automáticamente el sistema de cámara.</p>`,
             category: "unity",
             date: "2026-04-18",
             readTime: "12 min",
@@ -3289,9 +3244,13 @@ namespace Gubun.UnityTools.Quests
             relatedScript: "script-1"
         },
         {
-            id: "post-7",
+            id: "post-2",
             title: "Sistema de IA para Enemigos: Patrol, Chase & Attack",
             excerpt: "Implementa comportamiento avanzado de enemigos con patrullaje, detección de jugador y sistemas de combate.",
+            content: `<h2>Ultimate AI Combat System</h2><p>Sistema de IA completo que transforma enemigos simples en oponentes desafiantes con comportamientos realistas.</p>
+            <h3>Estados de IA</h3><ul><li>🔍 <strong>Patrol:</strong> Navegación entre waypoints con NavMesh</li><li>👁️ <strong>Chase:</strong> Persecución inteligente con predicción</li><li>⚔️ <strong>Attack:</strong> Combate melee y a distancia</li><li>🛡️ <strong>Cover:</strong> Busca cobertura automáticamente</li><li>🔎 <strong>Search:</strong> Investiga última posición conocida</li></ul>
+            <h3>Configuración Rápida</h3><p>1. Agrega NavMesh a tu escena (Window > AI > Navigation)</p><p>2. Crea waypoints como objetos vacíos</p><p>3. Adjunta el script AIController al enemigo</p><p>4. Asigna el target (jugador) y waypoints</p>
+            <h3>Tipos de Ataque</h3><ul><li><strong>Melee:</strong> Daño cuerpo a cuerpo con cooldown</li><li><strong>Ranged:</strong> Proyectiles con línea de visión</li><li><strong>Hybrid:</strong> Alterna según distancia</li></ul>`,
             category: "unity",
             date: "2026-04-17",
             readTime: "10 min",
@@ -3300,9 +3259,19 @@ namespace Gubun.UnityTools.Quests
             relatedScript: "script-2"
         },
         {
-            id: "post-8",
+            id: "post-3",
             title: "Inventario y Crafting: Sistema Modular Completo",
             excerpt: "Tutorial paso a paso para crear un sistema de inventario con slots, stack, drag & drop y recetas de crafteo.",
+            content: `<h2>Modular Inventory & Crafting</h2><p>Sistema de inventario grid-based con crafting integrado. Compatible con cualquier tipo de juego RPG o survival.</p>
+            <h3>Funcionalidades</h3><ul><li>📦 Slots basados en grid (tamaño configurable)</li><li>📚 Stack de items hasta 99 unidades</li><li>🖱️ Drag & drop con feedback visual</li><li>⚗️ Sistema de crafting con recetas</li><li>🔧 Equipamiento de armas/armaduras</li><li>💾 Persistencia automática</li></ul>
+            <h3>Estructura de Datos</h3><p>Los items usan <code>ItemData</code> ScriptableObjects:</p><pre><code>[CreateAssetMenu]
+public class ItemData : ScriptableObject {
+    public string itemName;
+    public Sprite icon;
+    public int maxStack = 99;
+    public bool isCraftable;
+}</code></pre>
+            <h3>Crafting</h3><p>Define recetas en el Inspector:</p><ul><li>Madera + Piedra = Pico de piedra</li><li>Hierro x3 + Madera = Espada de hierro</li></ul>`,
             category: "unity",
             date: "2026-04-16",
             readTime: "15 min",
@@ -3311,9 +3280,16 @@ namespace Gubun.UnityTools.Quests
             relatedScript: "script-3"
         },
         {
-            id: "post-9",
+            id: "post-4",
             title: "Save System Pro: Guardado Encriptado en Unity",
             excerpt: "Implementa un sistema de guardado profesional con AES-256, compresión LZ4 y múltiples slots.",
+            content: `<h2>Advanced Save System Pro</h2><p>Sistema de guardado enterprise-grade con encriptación militar y compresión avanzada.</p>
+            <h3>🔐 Seguridad</h3><ul><li>AES-256 Encriptación</li><li>LZ4 Compresión (80% reducción de tamaño)</li><li>Checksums de integridad</li><li>Anti-tampering básico</li></ul>
+            <h3>💾 Múltiples Slots</h3><p>Soporta hasta 10 slots de guardado:</p><pre><code>SaveManager.Instance.SaveGame(slotIndex);
+SaveManager.Instance.LoadGame(slotIndex);
+SaveManager.Instance.AutoSave(intervalSeconds);</code></pre>
+            <h3>📁 Formatos</h3><ul><li><strong>JSON:</strong> Legible, para debug</li><li><strong>Binary:</strong> Compacto y rápido</li><li><strong>Custom (.gubun):</strong> Encriptado por defecto</li></ul>
+            <h3>Eventos</h3><p>Callbacks para UI de carga:</p><ul><li><code>OnSaveStarted</code>, <code>OnSaveCompleted(bool success)</code></li><li><code>OnLoadStarted</code>, <code>OnLoadCompleted(bool success)</code></li></ul>`,
             category: "unity",
             date: "2026-04-14",
             readTime: "11 min",
@@ -3322,9 +3298,17 @@ namespace Gubun.UnityTools.Quests
             relatedScript: "script-4"
         },
         {
-            id: "post-10",
+            id: "post-5",
             title: "Sistema de Diálogos con Ramificaciones",
             excerpt: "Crea conversaciones dinámicas con choices condicionales, variables y soporte para Yarn/JSON.",
+            content: `<h2>Advanced Dialogue System</h2><p>Sistema de diálogos cinematico con soporte para conversaciones complejas y ramificadas.</p>
+            <h3>✨ Features</h3><ul><li>🌳 Árboles de diálogo ilimitados</li><li>🔀 Choices condicionales</li><li>📊 Variables ($playerName, $gold, etc.)</li><li>🎭 Soporte múltiples personajes</li><li>📁 Import Yarn/JSON</li><li>⌨️ Typing effect configurable</li></ul>
+            <h3>Sintaxis Yarn</h3><pre><code>-> NPC: ¡Hola $playerName!
+   Jugador: 
+   -> ¿Cómo estás? [if $gold > 100]
+   -> Adiós
+-> NPC: Tienes $gold monedas.</code></pre>
+            <h3>Integración</h3><p>Trigger diálogos desde cualquier script:</p><pre><code>DialogueManager.Instance.StartDialogue("intro_scene");</code></pre>`,
             category: "unity",
             date: "2026-04-13",
             readTime: "9 min",
@@ -3333,9 +3317,16 @@ namespace Gubun.UnityTools.Quests
             relatedScript: "script-5"
         },
         {
-            id: "post-11",
+            id: "post-6",
             title: "Quest System: Misiones con Objetivos Múltiples",
             excerpt: "Implementa un sistema de quests completo con objetivos, progresión, rewards y UI dinámica.",
+            content: `<h2>Quest System with Objectives</h2><p>Sistema de misiones tipo MMORPG con tracking de progreso en tiempo real.</p>
+            <h3>Tipos de Quests</h3><ul><li>📜 Main Quests - Historia principal</li><li>📋 Side Quests - Misiones opcionales</li><li>📅 Daily Quests - Reset diario</li><li>🏆 Achievements - Logros permanentes</li></ul>
+            <h3>Objetivos</h3><p>Múltiples tipos de objetivos por quest:</p><ul><li>🎯 <strong>Kill:</strong> Derrota X enemigos</li><li>📦 <strong>Collect:</strong> Recolecta items</li><li>🗺️ <strong>Location:</strong> Alcanza coordenadas</li><li>👤 <strong>Talk:</strong> Habla con NPCs</li><li>⚔️ <strong>Defend:</strong> Protege objetivo</li></ul>
+            <h3>Rewards</h3><ul><li>💰 XP y Currency</li><li>📦 Items</li><li>🏅 Reputación</li><li>🔓 Unlock de contenido</li></ul>
+            <h3>API Simple</h3><pre><code>QuestManager.Instance.AcceptQuest("quest_001");
+QuestManager.Instance.ReportObjective("quest_001", "kill_5_goblins");
+QuestManager.Instance.CompleteQuest("quest_001");</code></pre>`,
             category: "unity",
             date: "2026-04-11",
             readTime: "13 min",
