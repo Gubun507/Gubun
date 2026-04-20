@@ -195,7 +195,7 @@ function createPostCard(post) {
         ? `<a href="../scripts/#${post.relatedScript}" class="btn btn-small btn-primary" onclick="event.stopPropagation();">Ver script</a>`
         : '';
     
-    // Get real download count from related script
+    // Get real download count from related script (real data from GUBUN_DATA)
     let downloadCount = 0;
     if (post.relatedScript && GUBUN_DATA.scripts) {
         const script = GUBUN_DATA.scripts.find(s => s.id === post.relatedScript);
@@ -203,15 +203,6 @@ function createPostCard(post) {
             downloadCount = script.downloads || 0;
         }
     }
-    
-    // Get rating from post data
-    const rating = post.rating || 0;
-    const ratingCount = post.ratingCount || 0;
-    const commentCount = post.commentCount || 0;
-    
-    const ratingDisplay = rating > 0 
-        ? `<span style="color:var(--warning);" title="${rating}/5 estrellas">${renderStars(rating)}</span>`
-        : '<span style="color:var(--text-muted);">☆☆☆☆☆</span>';
     
     return `
         <article class="card blog-card" onclick="showPostModal('${post.id}')" style="cursor:pointer;">
@@ -226,11 +217,11 @@ function createPostCard(post) {
                 </div>
                 <h3 class="card-title">${post.title}</h3>
                 <p class="card-description">${post.excerpt}</p>
+                ${downloadCount > 0 ? `
                 <div style="display:flex;align-items:center;gap:12px;margin:8px 0;font-size:0.8rem;color:var(--text-muted);">
-                    <span title="Calificación">${ratingDisplay} ${rating > 0 ? `(${ratingCount})` : ''}</span>
-                    ${downloadCount > 0 ? `<span title="Descargas">⬇ ${formatNumber(downloadCount)}</span>` : ''}
-                    ${commentCount > 0 ? `<span title="Comentarios">💬 ${commentCount}</span>` : ''}
+                    <span title="Descargas">⬇ ${formatNumber(downloadCount)} descargas</span>
                 </div>
+                ` : ''}
                 <div class="card-footer">
                     <span class="card-meta">${formatDate(post.date)}</span>
                     <div style="display:flex;gap:8px;" onclick="event.stopPropagation();">
@@ -257,16 +248,23 @@ async function showPostModal(postId) {
         isAuth = currentUser !== null;
     }
     
-    // Get real stats
+    // Get real stats from Supabase
     let downloadCount = 0;
     if (post.relatedScript && GUBUN_DATA.scripts) {
         const script = GUBUN_DATA.scripts.find(s => s.id === post.relatedScript);
         if (script) downloadCount = script.downloads || 0;
     }
     
-    const rating = post.rating || 0;
-    const ratingCount = post.ratingCount || 0;
-    const commentCount = post.commentCount || 0;
+    // Get real rating from Supabase
+    let rating = 0;
+    let ratingCount = 0;
+    let commentCount = 0;
+    if (typeof GubunDB !== 'undefined') {
+        const ratingData = await GubunDB.getPostRating(postId);
+        rating = ratingData.avg;
+        ratingCount = ratingData.count;
+        commentCount = await GubunDB.getPostCommentCount(postId);
+    }
     
     const ratingDisplay = rating > 0 
         ? `<span style="color:var(--warning);font-size:1.2rem;">${renderStars(rating)}</span>`
@@ -303,7 +301,7 @@ async function showPostModal(postId) {
                 <div style="display:flex;gap:20px;padding:16px;background:var(--bg-darker);border-radius:var(--radius);margin-bottom:20px;flex-wrap:wrap;align-items:center;">
                     <div style="display:flex;align-items:center;gap:6px;">
                         ${ratingDisplay}
-                        <span style="color:var(--text-muted);font-size:0.875rem;">(${ratingCount} ${ratingCount === 1 ? 'voto' : 'votos'})</span>
+                        ${ratingCount > 0 ? `<span style="color:var(--text-muted);font-size:0.875rem;">(${ratingCount} ${ratingCount === 1 ? 'voto' : 'votos'})</span>` : '<span style="color:var(--text-muted);font-size:0.875rem;">(Sin calificaciones)</span>'}
                     </div>
                     ${downloadCount > 0 ? `
                     <div style="display:flex;align-items:center;gap:6px;color:var(--text-muted);">
