@@ -271,7 +271,7 @@ async function showCodeModal(scriptId) {
     // Show preview (first 5 lines) to everyone, full code only to logged users
     const codeLines = script.code.split('\n');
     const previewLines = 5;
-    const displayCode = isAuth ? script.code : codeLines.slice(0, previewLines).join('\n') + '\n\n// 🔒 Inicia sesión para ver el código completo y descargar';
+    const displayCode = isAuth ? script.code : codeLines.slice(0, previewLines).join('\n') + '\n\n// � Desbloquea el script completo (300+ líneas)\n// Gratis al crear una cuenta';
     
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
@@ -302,10 +302,10 @@ async function showCodeModal(scriptId) {
                     ${script.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                 </div>
                 ${!isAuth ? `
-                <div style="margin-top:20px;padding:16px;background:linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);border:1px solid var(--warning);border-radius:var(--radius);text-align:center;">
-                    <p style="margin:0 0 12px 0;color:var(--text-primary);font-weight:500;">🔒 Acceso completo requiere inicio de sesión</p>
-                    <p style="margin:0 0 16px 0;font-size:0.875rem;color:var(--text-secondary);">Inicia sesión para ver el código completo, copiar y descargar el script.</p>
-                    <button class="btn btn-primary" onclick="closeModal(this); showAuthModal('signin');">Iniciar sesión</button>
+                <div style="margin-top:20px;padding:20px;background:linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%);border:1px solid var(--success);border-radius:var(--radius);text-align:center;">
+                    <p style="margin:0 0 8px 0;color:var(--text-primary);font-weight:600;font-size:1.1rem;">� Desbloquea el script completo (300+ líneas)</p>
+                    <p style="margin:0 0 16px 0;font-size:0.875rem;color:var(--text-secondary);">Gratis al crear una cuenta</p>
+                    <button class="btn btn-primary" onclick="closeModal(this); showAuthModal('signup');">Crear cuenta gratis</button>
                 </div>
                 ` : ''}
             </div>
